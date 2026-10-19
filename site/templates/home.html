@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}{{ profile.name }} | {{ profile.headline }}{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">{{ profile.location }}</p>
+  <h1>{{ profile.name }}</h1>
+  <p class="headline">{{ profile.headline }}</p>
+  <p class="intro">{{ profile.intro }}</p>
+  <div class="actions">
+    <a class="button button-primary" href="/experience">View experience</a>
+    <a class="button" href="/projects">Projects</a>
+    <a class="button" href="/contact">Contact</a>
+  </div>
+</section>
+
+<section aria-labelledby="highlights-heading">
+  <h2 id="highlights-heading" class="visually-hidden">Highlights</h2>
+  <ul class="facts">
+    {% for fact in profile.highlights %}
+    <li class="fact">
+      <span class="fact-value">{{ fact.value }}</span>
+      <span class="fact-label">{{ fact.label }}</span>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+<aside class="panel lab-teaser" aria-labelledby="lab-heading">
+  <div>
+    <h2 id="lab-heading">AI Lab <span class="tag">Coming soon</span></h2>
+    <p>Ask questions about my experience, skills and projects. Answers will come from the same content you see on this site.</p>
+  </div>
+  <a class="button button-primary" href="/lab">Open the AI Lab</a>
+</aside>
+{% endblock %}

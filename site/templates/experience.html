@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Experience | {{ profile.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h1>Experience</h1>
+</header>
+
+<ol class="timeline">
+  {% for role in roles %}
+  <li class="timeline-item">
+    <article aria-labelledby="role-{{ role.slug }}">
+      <header class="role-header">
+        <h2 id="role-{{ role.slug }}">{{ role.title }}, <span class="company">{{ role.company }}</span></h2>
+        <p class="meta">
+          <time>{{ role.dates }}</time>
+          <span aria-hidden="true">·</span>
+          <span>{{ role.location }}</span>
+        </p>
+      </header>
+      <div class="prose">{{ role.body_html | safe }}</div>
+      <ul class="tags" aria-label="Tools used">
+        {% for tag in role.tags %}<li class="tag">{{ tag }}</li>{% endfor %}
+      </ul>
+    </article>
+  </li>
+  {% endfor %}
+</ol>
+{% endblock %}

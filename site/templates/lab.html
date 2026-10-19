@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}AI Lab | {{ profile.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h1>AI Lab</h1>
+  <p class="lead">Ask a question about my experience, skills or projects. Answers will come from the same content you see on this site.</p>
+</header>
+
+<div class="lab-layout">
+  <section class="panel" aria-labelledby="ask-heading">
+    <h2 id="ask-heading">Ask a question</h2>
+    <form id="ask-form" class="ask-form">
+      <label for="question">Your question</label>
+      <div class="ask-row">
+        <input id="question" name="question" type="search" required
+               placeholder="For example: Which vector databases has Blessing used?">
+        <button class="button button-primary" type="submit">Ask</button>
+      </div>
+    </form>
+    <div id="answer" class="answer" aria-live="polite"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="status-heading">
+    <h2 id="status-heading">System status</h2>
+    <dl class="status-list">
+      <div class="status-row">
+        <dt>Ollama (local LLM)</dt>
+        <dd><span class="status" data-service="ollama" data-state="checking">Checking</span></dd>
+      </div>
+      <div class="status-row">
+        <dt>Qdrant (vector search)</dt>
+        <dd><span class="status" data-service="qdrant" data-state="checking">Checking</span></dd>
+      </div>
+    </dl>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="/static/lab.js" defer></script>{% endblock %}

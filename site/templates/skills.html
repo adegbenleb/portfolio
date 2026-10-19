@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Skills | {{ profile.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h1>Skills</h1>
+</header>
+
+<div class="skill-groups">
+  {% for group in groups %}
+  <section class="panel" aria-labelledby="skills-{{ loop.index }}">
+    <h2 id="skills-{{ loop.index }}">{{ group.label }}</h2>
+    <ul class="tags">
+      {% for tool in group.tools %}<li class="tag">{{ tool }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endfor %}
+</div>
+{% endblock %}

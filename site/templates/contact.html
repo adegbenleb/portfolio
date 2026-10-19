@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Contact | {{ profile.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h1>Contact</h1>
+  <p class="lead">The best way to reach me is by email. I am also happy to connect on LinkedIn.</p>
+</header>
+
+<dl class="panel contact-list">
+  <div class="contact-row">
+    <dt>Email</dt>
+    <dd><a class="text-link" href="mailto:{{ profile.email }}">{{ profile.email }}</a></dd>
+  </div>
+  <div class="contact-row">
+    <dt>LinkedIn</dt>
+    <dd><a class="text-link" href="https://{{ profile.linkedin }}" rel="noopener">{{ profile.linkedin }}</a></dd>
+  </div>
+  <div class="contact-row">
+    <dt>GitHub</dt>
+    <dd><a class="text-link" href="https://{{ profile.github }}" rel="noopener">{{ profile.github }}</a></dd>
+  </div>
+  <div class="contact-row">
+    <dt>Location</dt>
+    <dd>{{ profile.location }}</dd>
+  </div>
+</dl>
+{% endblock %}
