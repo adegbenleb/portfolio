@@ -3,7 +3,7 @@
 {% block content %}
 <header class="page-header">
   <h1>AI Lab</h1>
-  <p class="lead">Ask a question about my experience, skills or projects. Answers will come from the same content you see on this site.</p>
+  <p class="lead">Ask a question about my experience, skills or projects. Answers are written by a local LLM using only the content on this site, and every answer lists its sources.</p>
 </header>
 
 <div class="lab-layout">
@@ -12,12 +12,27 @@
     <form id="ask-form" class="ask-form">
       <label for="question">Your question</label>
       <div class="ask-row">
-        <input id="question" name="question" type="search" required
+        <input id="question" name="question" type="search" required maxlength="500"
                placeholder="For example: Which vector databases has Blessing used?">
         <button class="button button-primary" type="submit">Ask</button>
       </div>
     </form>
-    <div id="answer" class="answer" aria-live="polite"></div>
+    <div class="examples">
+      <p class="examples-label">Try one:</p>
+      <ul class="example-list">
+        {% for example in examples %}
+        <li><button type="button" class="button button-small example" data-question="{{ example }}">{{ example }}</button></li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div id="result" class="result" aria-live="polite" aria-busy="false">
+      <p id="answer" class="answer"></p>
+      <div id="sources-block" class="sources" hidden>
+        <h3>Sources</h3>
+        <ol id="sources" class="source-list"></ol>
+      </div>
+      <p id="timing" class="meta"></p>
+    </div>
   </section>
 
   <section class="panel" aria-labelledby="status-heading">

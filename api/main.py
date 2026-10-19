@@ -1,22 +1,28 @@
 """FastAPI app that renders the portfolio pages from content/ at request time."""
 
 import asyncio
-import os
+import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
+from typing import Annotated
 
 import httpx
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
 
 from api import content
+from rag import answer as rag_answer
+from rag.config import settings
+from rag.services import ServiceUnavailable, collection_size
 
 SITE_DIR = Path(__file__).resolve().parent.parent / "site"
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
-QDRANT_URL = os.getenv("QDRANT_URL", "http://localhost:16335")
 HEALTH_TIMEOUT_SECONDS = 2.0
+
+logger = logging.getLogger("uvicorn.error")
 
 NAV = [
     ("/", "home", "Home"),
@@ -27,7 +33,29 @@ NAV = [
     ("/contact", "contact", "Contact"),
 ]
 
-app = FastAPI(title="Blessing Adegbenle Portfolio")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Warn, but never ingest automatically: indexing is an explicit step.
+    try:
+        if await run_in_threadpool(collection_size) == 0:
+            logger.warning(
+                "The Qdrant collection '%s' is empty. Run: uv run python -m rag.ingest",
+                settings.collection,
+            )
+    except ServiceUnavailable as error:
+        logger.warning("%s", error)
+    yield
+
+
+LAB_EXAMPLES = [
+    "Where does Blessing work now?",
+    "What did he do at Miele?",
+    "Which vector database does he use?",
+    "Tell me about ShopFlow",
+]
+
+app = FastAPI(title="Blessing Adegbenle Portfolio", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=SITE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=SITE_DIR / "templates")
 
@@ -62,7 +90,7 @@ def skills(request: Request):
 
 @app.get("/lab", response_class=HTMLResponse)
 def lab(request: Request):
-    return render(request, "lab.html", "lab")
+    return render(request, "lab.html", "lab", examples=LAB_EXAMPLES)
 
 
 @app.get("/contact", response_class=HTMLResponse)
@@ -83,7 +111,7 @@ async def health() -> dict[str, str]:
     """Check whether Ollama and Qdrant actually respond."""
     async with httpx.AsyncClient(timeout=HEALTH_TIMEOUT_SECONDS) as client:
         ollama, qdrant = await asyncio.gather(
-            _responds(client, OLLAMA_URL), _responds(client, QDRANT_URL)
+            _responds(client, settings.ollama_url), _responds(client, settings.qdrant_url)
         )
     return {
         "ollama": "online" if ollama else "offline",
@@ -92,10 +120,26 @@ async def health() -> dict[str, str]:
 
 
 class Question(BaseModel):
-    question: str
+    question: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=500)]
+
+
+class Source(BaseModel):
+    n: int
+    label: str
+    section: str
+    snippet: str
+    score: float
+
+
+class Answer(BaseModel):
+    answer: str
+    sources: list[Source]
+    seconds: float
 
 
 @app.post("/api/ask")
-def ask(question: Question):
-    # The RAG backend is the next step. Until then, say so honestly.
-    raise HTTPException(status_code=503, detail="The AI Lab is coming soon.")
+def ask(body: Question) -> Answer:
+    try:
+        return Answer(**rag_answer.answer(body.question))
+    except ServiceUnavailable as error:
+        raise HTTPException(status_code=503, detail=str(error)) from error

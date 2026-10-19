@@ -3,6 +3,7 @@ from fastapi.testclient import TestClient
 
 from api import main
 from api.content import format_month
+from rag.config import settings
 
 client = TestClient(main.app)
 
@@ -60,12 +61,6 @@ def test_health_returns_status_for_both_services():
 
 def test_health_reports_offline_when_service_is_unreachable(monkeypatch):
     # Port 9 (discard) is closed on a normal machine, so the connection is refused.
-    monkeypatch.setattr(main, "OLLAMA_URL", "http://127.0.0.1:9")
-    monkeypatch.setattr(main, "QDRANT_URL", "http://127.0.0.1:9")
+    monkeypatch.setattr(settings, "ollama_url", "http://127.0.0.1:9")
+    monkeypatch.setattr(settings, "qdrant_url", "http://127.0.0.1:9")
     assert client.get("/api/health").json() == {"ollama": "offline", "qdrant": "offline"}
-
-
-def test_ask_returns_503_until_backend_exists():
-    response = client.post("/api/ask", json={"question": "What does Blessing work on?"})
-    assert response.status_code == 503
-    assert response.json() == {"detail": "The AI Lab is coming soon."}

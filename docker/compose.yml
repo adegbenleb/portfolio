@@ -1,0 +1,13 @@
+name: portfolio
+
+services:
+  qdrant:
+    image: qdrant/qdrant:v1.13.0
+    ports:
+      - "16335:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    restart: unless-stopped
+
+volumes:
+  qdrant_storage:

@@ -17,13 +17,38 @@ from the same Markdown files in `content/`.
 - `evals/`: evaluation questions and scripts for the AI Lab
 - `docker/`: container and compose files
 
-## Planned ports
+## Ports
 - API: 18600
 - Qdrant: 16335
 - Ollama: 11434
 
+## Commands
+- Install: `uv sync`, then `cp .env.example .env` (settings: OLLAMA_URL, QDRANT_URL,
+  OLLAMA_MODEL, EMBED_MODEL)
+- Models: `ollama pull llama3.1:8b && ollama pull nomic-embed-text`
+- Start Qdrant: `docker compose -f docker/compose.yml up -d`
+- Build the search index: `uv run python -m rag.ingest`
+- Run the site: `uv run uvicorn api.main:app --port 18600 --reload`, then open
+  http://localhost:18600
+- Run the evals: `uv run python -m evals.run_evals` (results go to `evals/results/`;
+  compare models with `OLLAMA_MODEL=<model> uv run python -m evals.run_evals`)
+- Lint and test: `uv run ruff check . --fix && uv run ruff format . && uv run pytest -q`
+
+## How the AI Lab works
+- `rag/chunks.py` reads `content/` through `api/content.py` (the same reader as the pages)
+  and makes one chunk per experience bullet (prefixed with company, title and dates), per
+  profile section, per skill group and per project paragraph.
+- `rag/ingest.py` embeds the chunks with nomic-embed-text ("search_document: " prefix) and
+  recreates the Qdrant collection with deterministic IDs.
+- `rag/search.py` fetches the top 5 chunks ("search_query: " prefix). `rag/answer.py`
+  returns a fixed off-topic answer when the best score is below `min_score` (0.58, tuned
+  with the evals), otherwise asks the LLM to answer from the chunks with [n] citations.
+
 ## Rules
 - `content/` is the single source of truth. Pages and the RAG index never hold facts of their own.
+- After editing anything in `content/`, re-run `uv run python -m rag.ingest`. Otherwise the
+  pages show the new text but the AI Lab still answers from the old index.
+- After changing chunking, the prompt, the threshold or the model, re-run the evals.
 - Never invent facts about Blessing. Everything must come from the CV or the content files.
   If something is missing or unclear, ask instead of guessing.
 - Personal project only. No employer code, data, credentials or internal context.

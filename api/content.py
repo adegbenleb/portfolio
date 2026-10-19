@@ -1,4 +1,5 @@
-"""Load the Markdown files in content/. They are the single source of truth for every page."""
+"""Load the Markdown files in content/. They are the single source of truth for every page
+and for the AI Lab's search index (rag/chunks.py reads content through this module too)."""
 
 import re
 from pathlib import Path
@@ -8,7 +9,7 @@ import markdown
 
 CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
 
-SKILL_LINE = re.compile(r"^- \*\*(?P<label>.+?)\*\*:\s*(?P<items>.+)$")
+SKILL_LINE = re.compile(r"^\*\*(?P<label>.+?)\*\*:\s*(?P<items>.+)$")
 
 
 def format_month(value) -> str:
@@ -20,23 +21,55 @@ def format_month(value) -> str:
     return f"{month}/{year}"
 
 
-def date_range(start, end) -> str:
-    return f"{format_month(start)} – {format_month(end)}"
+def date_range(start, end, separator: str = " – ") -> str:
+    return f"{format_month(start)}{separator}{format_month(end)}"
 
 
-def _paragraphs(body: str) -> list[str]:
-    return [p.strip() for p in body.strip().split("\n\n") if p.strip()]
+def plain(text: str) -> str:
+    """Strip the bold markers used in the content files, for search chunks."""
+    return text.replace("**", "")
+
+
+def parse_body(body: str) -> list[dict]:
+    """Split a Markdown body into sections: [{"heading", "paragraphs", "bullets"}].
+
+    Text before the first "## " heading belongs to a section whose heading is None.
+    """
+    sections = [{"heading": None, "paragraphs": [], "bullets": []}]
+    paragraph: list[str] = []
+
+    def flush():
+        if paragraph:
+            sections[-1]["paragraphs"].append(" ".join(paragraph))
+            paragraph.clear()
+
+    for raw in body.splitlines():
+        line = raw.strip()
+        if line.startswith("## "):
+            flush()
+            sections.append({"heading": line[3:].strip(), "paragraphs": [], "bullets": []})
+        elif line.startswith("- "):
+            flush()
+            sections[-1]["bullets"].append(line[2:].strip())
+        elif line:
+            paragraph.append(line)
+        else:
+            flush()
+    flush()
+    return [s for s in sections if s["heading"] or s["paragraphs"] or s["bullets"]]
 
 
 def load_profile() -> dict:
     post = frontmatter.load(CONTENT_DIR / "profile.md")
-    summary, *rest = _paragraphs(post.content)
+    intro_section, *sections = parse_body(post.content)
+    summary = intro_section["paragraphs"][0]
     sentences = re.split(r"(?<=\.)\s+", summary)
     return {
         **post.metadata,
+        "file": "content/profile.md",
         "summary": summary,
         "intro": " ".join(sentences[:2]),
-        "details_html": markdown.markdown("\n\n".join(rest)),
+        "sections": sections,
     }
 
 
@@ -45,11 +78,15 @@ def load_experience() -> list[dict]:
     roles = []
     for path in (CONTENT_DIR / "experience").glob("*.md"):
         post = frontmatter.load(path)
+        body = parse_body(post.content)[0]
         roles.append(
             {
                 **post.metadata,
                 "slug": path.stem,
+                "file": f"content/experience/{path.name}",
                 "dates": date_range(post["start"], post["end"]),
+                "intro": body["paragraphs"],
+                "bullets": body["bullets"],
                 "body_html": markdown.markdown(post.content),
             }
         )
@@ -60,13 +97,15 @@ def load_projects() -> list[dict]:
     projects = []
     for path in (CONTENT_DIR / "projects").glob("*.md"):
         post = frontmatter.load(path)
-        first, *rest = _paragraphs(post.content)
+        first, *rest = parse_body(post.content)[0]["paragraphs"]
         projects.append(
             {
                 **post.metadata,
                 "slug": path.stem,
+                "file": f"content/projects/{path.name}",
                 "dates": date_range(post["start"], post["end"]),
                 "description": first,
+                "paragraphs": [first, *rest],
                 "more_html": markdown.markdown("\n\n".join(rest)),
             }
         )
@@ -77,8 +116,8 @@ def load_skills() -> list[dict]:
     """Skill groups as [{"label": ..., "tools": [...]}], parsed from "- **Label**: a, b" lines."""
     post = frontmatter.load(CONTENT_DIR / "skills.md")
     groups = []
-    for line in post.content.splitlines():
-        match = SKILL_LINE.match(line.strip())
+    for bullet in parse_body(post.content)[0]["bullets"]:
+        match = SKILL_LINE.match(bullet)
         if match:
             tools = [tool.strip() for tool in match["items"].split(",")]
             groups.append({"label": match["label"], "tools": tools})
