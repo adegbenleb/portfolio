@@ -6,6 +6,7 @@ from the local one. The only differences are the URL scheme and the AI Lab page:
 - static: links like "/portfolio/experience/", and the lab page shows recorded examples
 """
 
+import hashlib
 import json
 import re
 from collections.abc import Callable
@@ -53,10 +54,25 @@ LAB_EXAMPLES = [
 ]
 
 
+def asset_version(path: str) -> str:
+    """Short hash of a CSS or JS file, so its URL changes whenever the file changes.
+
+    Browsers cache these files (GitHub Pages sends max-age=600). Without a version, a
+    visitor can get new HTML with an old stylesheet, which breaks the layout.
+    """
+    file = SITE_DIR / path
+    if not file.is_file():
+        return ""
+    return hashlib.sha256(file.read_bytes()).hexdigest()[:10]
+
+
 def make_url(base: str = "/", static_site: bool = False) -> Callable[[str], str]:
     """Build links for templates: url("experience"), url("static/style.css"), url("")."""
 
     def url(path: str = "") -> str:
+        if path.startswith("static/") and path.endswith((".css", ".js")):
+            version = asset_version(path)
+            return f"{base}{path}?v={version}" if version else f"{base}{path}"
         is_file = "." in path.rsplit("/", 1)[-1]
         is_page = path and not path.startswith("static/") and not is_file
         if static_site and is_page:

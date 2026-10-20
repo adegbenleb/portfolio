@@ -93,3 +93,24 @@ def test_static_build_keeps_the_shared_script_and_palette_links(tmp_path):
     html = (tmp_path / "index.html").read_text()
     urls = {entry["url"] for entry in search_index(html)}
     assert "/portfolio/experience/#role-miele" in urls
+
+
+@pytest.mark.parametrize("asset", ["static/style.css", "static/site.js"])
+def test_css_and_js_links_carry_a_content_version(asset):
+    html = client.get("/").text
+    match = re.search(rf'"/{asset}\?v=([0-9a-f]{{10}})"', html)
+    assert match, f"{asset} has no version"
+    # The versioned URL still serves the file.
+    assert client.get(f"/{asset}?v={match.group(1)}").status_code == 200
+
+
+def test_version_changes_when_the_file_changes(tmp_path, monkeypatch):
+    from api import pages
+
+    (tmp_path / "static").mkdir()
+    css = tmp_path / "static" / "x.css"
+    css.write_text("a{}")
+    monkeypatch.setattr(pages, "SITE_DIR", tmp_path)
+    first = pages.asset_version("static/x.css")
+    css.write_text("b{}")
+    assert pages.asset_version("static/x.css") != first
