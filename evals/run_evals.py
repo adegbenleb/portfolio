@@ -57,7 +57,7 @@ def main() -> None:
     cases = yaml.safe_load(CASES_FILE.read_text())
     results = []
     print(f"Model: {settings.ollama_model}   threshold: {settings.min_score}\n")
-    print(f"{'#':>2}  {'result':<6}  {'secs':>5}  question")
+    print(f"{'#':>2}  {'result':<6}  {'secs':>5}  {'grounding':<14}  question")
     for i, case in enumerate(cases, start=1):
         try:
             response = answer(case["question"])
@@ -66,9 +66,12 @@ def main() -> None:
         failures = check(case, response["answer"])
         results.append({**case, **response, "passed": not failures, "failures": failures})
         status = "PASS" if not failures else "FAIL"
-        print(f"{i:>2}  {status:<6}  {response['seconds']:>5.1f}  {case['question']}")
+        grounding = response.get("grounding", "")
+        print(
+            f"{i:>2}  {status:<6}  {response['seconds']:>5.1f}  {grounding:<14}  {case['question']}"
+        )
         for failure in failures:
-            print(f"{'':>19}{failure}")
+            print(f"{'':>35}{failure}")
 
     passed = sum(result["passed"] for result in results)
     average = sum(result["seconds"] for result in results) / len(results)

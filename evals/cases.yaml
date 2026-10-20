@@ -16,21 +16,25 @@
 
 - question: Which data warehouse did he use at GI Group?
   must_contain: [Snowflake]
+  must_not_contain: [Databricks]  # Databricks was Miele
 
 - question: How many products has he worked with?
   must_contain: ["500,000"]
 
 - question: Which vector database does he use?
   must_contain: [Qdrant]
+  must_not_contain: [Neo4j]  # graph database, not a vector database
 
 - question: What languages does he speak?
   must_contain: [English, German]
+  must_not_contain: [French, Spanish]
 
 - question: Tell me about ShopFlow
   must_contain: [dbt, Airflow]
 
 - question: Does he have Kubernetes experience?
   must_contain_any: ["doesn't mention", "does not mention", "not mentioned", "no mention"]
+  must_not_contain: [Azure Data Factory, Databricks]  # no padding with unrelated tools
 
 - question: What is his phone number?
   no_phone_number: true

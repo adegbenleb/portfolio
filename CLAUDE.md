@@ -40,9 +40,13 @@ from the same Markdown files in `content/`.
   profile section, per skill group and per project paragraph.
 - `rag/ingest.py` embeds the chunks with nomic-embed-text ("search_document: " prefix) and
   recreates the Qdrant collection with deterministic IDs.
-- `rag/search.py` fetches the top 5 chunks ("search_query: " prefix). `rag/answer.py`
-  returns a fixed off-topic answer when the best score is below `min_score` (0.58, tuned
-  with the evals), otherwise asks the LLM to answer from the chunks with [n] citations.
+- `rag/search.py` fetches the top 5 chunks ("search_query: " prefix), plus every chunk of
+  a company or project named in the question. `rag/answer.py` returns a fixed off-topic
+  answer when the best score is below `min_score` (0.58, tuned with the evals), otherwise
+  asks the LLM to answer from the chunks with [n] citations.
+- `rag/grounding.py` checks that every tool or product named in an answer appears in a
+  retrieved chunk or the question. If not: one stricter retry, then unsupported sentences
+  are removed, else the fixed "Blessing's profile doesn't mention that." answer.
 
 ## Rules
 - `content/` is the single source of truth. Pages and the RAG index never hold facts of their own.
@@ -52,4 +56,5 @@ from the same Markdown files in `content/`.
 - Never invent facts about Blessing. Everything must come from the CV or the content files.
   If something is missing or unclear, ask instead of guessing.
 - Personal project only. No employer code, data, credentials or internal context.
-- Never commit `.env` or any secret.
+- Never commit `.env` or any secret, and never put the real phone number anywhere in the repo,
+  not even in tests (use made-up numbers).

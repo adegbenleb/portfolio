@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -8,7 +10,8 @@ from rag.config import settings
 client = TestClient(main.app)
 
 PAGES = ["/", "/experience", "/projects", "/skills", "/lab", "/contact"]
-PHONE_FRAGMENTS = ["0000000", "+49 30", "+4930"]
+# The real number must never appear in the repo, so the test looks for any phone-like text.
+PHONE_PATTERN = re.compile(r"\+\d[\d\s-]{6,}\d|\btel:")
 
 
 @pytest.mark.parametrize("path", PAGES)
@@ -21,8 +24,7 @@ def test_every_page_returns_200(path):
 @pytest.mark.parametrize("path", PAGES)
 def test_phone_number_appears_on_no_page(path):
     html = client.get(path).text
-    for fragment in PHONE_FRAGMENTS:
-        assert fragment not in html
+    assert not PHONE_PATTERN.search(html)
 
 
 def test_experience_lists_newest_role_first():

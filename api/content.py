@@ -10,6 +10,7 @@ import markdown
 CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
 
 SKILL_LINE = re.compile(r"^\*\*(?P<label>.+?)\*\*:\s*(?P<items>.+)$")
+TOOL_NOTE = re.compile(r"^(?P<name>.+?)\s*\((?P<note>[^)]+)\)$")
 
 
 def format_month(value) -> str:
@@ -113,12 +114,24 @@ def load_projects() -> list[dict]:
 
 
 def load_skills() -> list[dict]:
-    """Skill groups as [{"label": ..., "tools": [...]}], parsed from "- **Label**: a, b" lines."""
+    """Skill groups parsed from "- **Label**: a, b (note)" lines.
+
+    Returns [{"label", "tools": ["a", "b (note)"], "entries": [{"name", "note"}]}]. The
+    search chunks use "tools" as written; the Skills page shows the note separately.
+    """
     post = frontmatter.load(CONTENT_DIR / "skills.md")
     groups = []
     for bullet in parse_body(post.content)[0]["bullets"]:
         match = SKILL_LINE.match(bullet)
         if match:
             tools = [tool.strip() for tool in match["items"].split(",")]
-            groups.append({"label": match["label"], "tools": tools})
+            entries = []
+            for tool in tools:
+                note = TOOL_NOTE.match(tool)
+                entries.append(
+                    {"name": note["name"], "note": note["note"]}
+                    if note
+                    else {"name": tool, "note": ""}
+                )
+            groups.append({"label": match["label"], "tools": tools, "entries": entries})
     return groups
