@@ -8,6 +8,11 @@ github: github.com/adegbenleb
 languages: [English (fluent), German (B2)]
 relocation: Open to relocation within Germany
 photo: profile.jpg
+pipeline:
+  - {stage: Sources, items: [BMEcat, PIM, CSV, SAP]}
+  - {stage: Pipelines, items: [Python, dbt, Airflow]}
+  - {stage: Stores, items: [PostgreSQL, Qdrant, Neo4j]}
+  - {stage: AI answers, items: [RAG, AI agents]}
 available_from: 2026-12
 highlights:
   - {value: "4+", label: years experience}

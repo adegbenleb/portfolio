@@ -5,61 +5,73 @@
   <h1>Experience</h1>
 </header>
 
-<section class="panel glance" aria-labelledby="glance-heading">
-  <h2 id="glance-heading">Career at a glance</h2>
-  <dl class="glance-grid">
-    <div>
-      <dt>Years in data engineering</dt>
-      <dd><span class="glance-value">{{ career.years }}</span> since {{ career.since }}</dd>
-    </div>
-    <div>
-      <dt>Companies</dt>
-      <dd><span class="glance-value">{{ career.companies | length }}</span> {{ career.companies | join(", ") }}</dd>
-    </div>
-    <div class="glance-domains">
-      <dt>Domains</dt>
-      <dd>
-        <ul>
-          {% for item in career.domains %}
-          <li><strong>{{ item.company }}:</strong> {{ item.domain }}</li>
-          {% endfor %}
-        </ul>
-      </dd>
-    </div>
-  </dl>
-</section>
+<div class="dag">
+  <section class="dag-step" aria-labelledby="glance-heading">
+    <h2 id="glance-heading" class="dag-title">Career at a glance</h2>
+    <dl class="panel glance-grid">
+      <div>
+        <dt class="mono">Years in data engineering</dt>
+        <dd><span class="glance-value">{{ career.years }}</span> since {{ career.since }}</dd>
+      </div>
+      <div>
+        <dt class="mono">Companies</dt>
+        <dd><span class="glance-value">{{ career.companies | length }}</span> {{ career.companies | join(", ") }}</dd>
+      </div>
+      <div class="glance-domains">
+        <dt class="mono">Domains</dt>
+        <dd>
+          <ul>
+            {% for item in career.domains %}
+            <li><strong>{{ item.company }}:</strong> {{ item.domain }}</li>
+            {% endfor %}
+          </ul>
+        </dd>
+      </div>
+    </dl>
+  </section>
 
-<ol class="timeline">
-  {% for role in roles %}
-  <li class="timeline-item">
-    <article aria-labelledby="role-{{ role.slug }}">
-      <header class="role-header">
-        <h2 id="role-{{ role.slug }}">{{ role.title }}, <span class="company">{{ role.company }}</span></h2>
-        <p class="meta">
-          <time>{{ role.dates }}</time>
-          <span aria-hidden="true">·</span>
-          <span>{{ role.location }}</span>
-        </p>
-      </header>
-      <div class="prose">{{ role.body_html | safe }}</div>
-      {% if role.case_study %}
-      <details class="case-study">
-        <summary>Case study</summary>
-        <dl>
-          {% for item in role.case_study %}
-          <div class="case-row">
-            <dt>{{ item.label }}</dt>
-            <dd>{{ item.text }}</dd>
+  <section class="dag-step" aria-labelledby="roles-heading">
+    <h2 id="roles-heading" class="dag-title">Roles</h2>
+    <p class="muted hint">Select a role to see what I did and a short case study.</p>
+    <ol class="timeline">
+      {% for role in roles %}
+      <li class="timeline-item" id="role-{{ role.slug }}">
+        <details class="role-card"{% if loop.first %} open{% endif %}>
+          <summary>
+            <span class="role-dates mono">{{ role.dates }}</span>
+            <span class="role-heading">
+              <span class="role-title">{{ role.title }}, <span class="company">{{ role.company }}</span></span>
+              <span class="role-location">{{ role.location }}</span>
+            </span>
+            <span class="role-tags">
+              {% for tag in role.tags[:6] %}<span class="tag">{{ tag }}</span>{% endfor %}
+              {% if role.tags | length > 6 %}<span class="tag tag-more">+{{ role.tags | length - 6 }}</span>{% endif %}
+            </span>
+            <span class="chevron" aria-hidden="true"></span>
+          </summary>
+          <div class="role-body">
+            <div class="prose">{{ role.body_html | safe }}</div>
+            {% if role.case_study %}
+            <div class="case-study">
+              <h3 class="panel-label mono">Case study</h3>
+              <dl>
+                {% for item in role.case_study %}
+                <div class="case-row">
+                  <dt class="mono">{{ item.label }}</dt>
+                  <dd>{{ item.text }}</dd>
+                </div>
+                {% endfor %}
+              </dl>
+            </div>
+            {% endif %}
+            <ul class="tags" aria-label="Tools used">
+              {% for tag in role.tags %}<li class="tag">{{ tag }}</li>{% endfor %}
+            </ul>
           </div>
-          {% endfor %}
-        </dl>
-      </details>
-      {% endif %}
-      <ul class="tags" aria-label="Tools used">
-        {% for tag in role.tags %}<li class="tag">{{ tag }}</li>{% endfor %}
-      </ul>
-    </article>
-  </li>
-  {% endfor %}
-</ol>
+        </details>
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+</div>
 {% endblock %}

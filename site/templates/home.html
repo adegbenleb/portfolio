@@ -1,6 +1,21 @@
 {% extends "base.html" %}
 {% block title %}{{ profile.name }} | {{ profile.headline }}{% endblock %}
 {% block content %}
+{% if profile.pipeline %}
+<figure class="pipeline" aria-labelledby="pipeline-caption">
+  <ol class="pipeline-stages">
+    {% for stage in profile.pipeline %}
+    <li class="stage{% if loop.last %} stage-last{% endif %}">
+      <span class="stage-index mono">{{ "%02d" | format(loop.index) }}</span>
+      <span class="stage-name">{{ stage.stage }}</span>
+      <span class="stage-items mono">{{ stage['items'] | join(" · ") }}</span>
+    </li>
+    {% endfor %}
+  </ol>
+  <figcaption id="pipeline-caption" class="pipeline-caption mono">From sources, through pipelines and stores, to AI answers.</figcaption>
+</figure>
+{% endif %}
+
 <div class="home-top">
   <section class="hero">
     <div class="hero-identity">
@@ -8,7 +23,7 @@
       <img class="profile-photo" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="160" height="160">
       {% endif %}
       <div>
-        <p class="eyebrow">{{ profile.location }}</p>
+        <p class="eyebrow mono">{{ profile.location }}</p>
         <h1>{{ profile.name }}</h1>
       </div>
     </div>
@@ -28,11 +43,11 @@
   </section>
 
   <aside class="panel key-facts" aria-labelledby="facts-heading">
-    <h2 id="facts-heading">Key facts</h2>
+    <h2 id="facts-heading" class="panel-label mono">Key facts</h2>
     <dl>
       {% for fact in key_facts %}
       <div class="key-fact">
-        <dt>{{ fact.label }}</dt>
+        <dt class="mono">{{ fact.label }}</dt>
         <dd>{{ fact.value }}</dd>
       </div>
       {% endfor %}
@@ -40,29 +55,34 @@
   </aside>
 </div>
 
-<section aria-labelledby="highlights-heading">
-  <h2 id="highlights-heading" class="visually-hidden">Highlights</h2>
-  <ul class="facts">
-    {% for fact in achievements %}
-    <li class="fact">
-      <span class="fact-value">{{ fact.value }}</span>
-      <span class="fact-label">{{ fact.label }}</span>
-    </li>
-    {% endfor %}
-  </ul>
-</section>
+<div class="dag">
+  <section class="dag-step" aria-labelledby="metrics-heading">
+    <h2 id="metrics-heading" class="dag-title">Pipeline metrics</h2>
+    <ul class="metrics">
+      {% for fact in achievements %}
+      <li class="metric">
+        <span class="metric-label mono">{{ fact.label }}</span>
+        <span class="metric-value">{{ fact.value }}</span>
+        <span class="metric-status mono"><span class="live-dot" aria-hidden="true"></span>live</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
 
-<section class="explore" aria-labelledby="explore-heading">
-  <h2 id="explore-heading">Explore</h2>
-  <ul class="explore-grid">
-    {% for path, label, description in explore %}
-    <li>
-      <a class="panel explore-card" href="{{ url(path) }}">
-        <span class="explore-title">{{ label }}</span>
-        <span class="explore-text">{{ description }}</span>
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-</section>
+  <section class="dag-step" aria-labelledby="explore-heading">
+    <h2 id="explore-heading" class="dag-title">Explore</h2>
+    <ul class="explore-grid">
+      {% for path, label, description in explore %}
+      <li>
+        <a class="panel explore-card" href="{{ url(path) }}">
+          <span class="explore-index mono">{{ "%02d" | format(loop.index) }}</span>
+          <span class="explore-title">{{ label }}</span>
+          <span class="explore-text">{{ description }}</span>
+          <span class="explore-arrow" aria-hidden="true">→</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
 {% endblock %}

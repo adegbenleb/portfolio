@@ -36,6 +36,7 @@ from the same Markdown files in `content/`.
 - Recorded examples for the static AI Lab: `uv run python -m evals.record_examples`
 - Demo video: `uv run python scripts/record_demo.py` (local site, Qdrant, Ollama running)
 - Public CV PDF: `uv run python scripts/build_cv.py` (writes content/cv-public.pdf; commit it)
+- Design screenshots: `uv run python scripts/screenshots.py` (both themes, desktop and mobile)
 - Lint and test: `uv run ruff check . --fix && uv run ruff format . && uv run pytest -q`
 
 ## How the AI Lab works
@@ -60,6 +61,15 @@ from the same Markdown files in `content/`.
   live status panel or the ask form.
 - Never set up tunnels, port forwarding or anything that exposes this laptop (it is
   company-managed). The live AI Lab is for local demos only.
+
+## Design
+- Dark theme by default, light theme via `[data-theme="light"]`; all colours are CSS
+  variables in `site/static/style.css`. Fonts: Bricolage Grotesque, Instrument Sans,
+  IBM Plex Mono. Teal accent, amber highlights, no purple gradients.
+- `site/static/site.js` handles the theme toggle, scroll progress, mobile menu and the
+  Cmd+K palette (its data is `search_index` from `api/pages.py`).
+- Keep WCAG AA contrast in both themes and respect prefers-reduced-motion. After layout
+  changes, re-run the screenshot script and look at mobile widths too.
 
 ## Rules
 - `content/` is the single source of truth. Pages and the RAG index never hold facts of their own.

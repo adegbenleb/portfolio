@@ -7,8 +7,8 @@
 
 <div class="skill-groups">
   {% for group in groups %}
-  <section class="panel" aria-labelledby="skills-{{ loop.index }}">
-    <h2 id="skills-{{ loop.index }}">{{ group.label }}</h2>
+  <section class="panel skill-group" aria-labelledby="skills-{{ loop.index }}">
+    <h2 id="skills-{{ loop.index }}" class="panel-label mono">{{ group.label }}</h2>
     <ul class="tags">
       {% for entry in group.entries %}<li class="tag">{{ entry.name }}{% if entry.note %} <span class="tag-note">{{ entry.note }}</span>{% endif %}</li>{% endfor %}
     </ul>

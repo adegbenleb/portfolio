@@ -11,10 +11,10 @@
   </div>
 </header>
 
-<div class="about">
+<div class="about dag">
   {% for heading, html in about.html_by_heading.items() %}
-  <section class="about-section" aria-labelledby="about-{{ loop.index }}">
-    <h2 id="about-{{ loop.index }}">{{ heading }}</h2>
+  <section class="about-section dag-step" aria-labelledby="about-{{ loop.index }}">
+    <h2 id="about-{{ loop.index }}" class="dag-title">{{ heading }}</h2>
     <div class="prose">{{ html | safe }}</div>
   </section>
   {% endfor %}

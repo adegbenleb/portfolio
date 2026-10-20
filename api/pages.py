@@ -147,6 +147,42 @@ def page(key: str, static_site: bool = False) -> tuple[str, dict]:
     raise KeyError(key)
 
 
+def search_index(url: Callable[[str], str]) -> list[dict]:
+    """Entries for the Cmd+K command palette: pages, roles, projects and skill groups."""
+    entries = [
+        {"title": label, "kind": "Page", "url": url(path), "hint": EXPLORE.get(key, "")}
+        for path, key, label in NAV
+    ]
+    for role in content.load_experience():
+        entries.append(
+            {
+                "title": f"{role['title']}, {role['company']}",
+                "kind": "Role",
+                "url": f"{url('experience')}#role-{role['slug']}",
+                "hint": f"{role['dates']} · {' '.join(role.get('tags', []))}",
+            }
+        )
+    for project in content.load_projects():
+        entries.append(
+            {
+                "title": project["title"],
+                "kind": "Project",
+                "url": f"{url('projects')}#project-{project['slug']}",
+                "hint": f"{project['type']} · {' '.join(project.get('tags', []))}",
+            }
+        )
+    for i, group in enumerate(content.load_skills(), start=1):
+        entries.append(
+            {
+                "title": group["label"],
+                "kind": "Skills",
+                "url": f"{url('skills')}#skills-{i}",
+                "hint": ", ".join(group["tools"]),
+            }
+        )
+    return entries
+
+
 def context(key: str, url: Callable[[str], str], static_site: bool = False) -> tuple[str, dict]:
     """Full template context: shared layout data plus the page's own data."""
     template, extra = page(key, static_site)
@@ -156,5 +192,6 @@ def context(key: str, url: Callable[[str], str], static_site: bool = False) -> t
         "url": url,
         "static_site": static_site,
         "profile": content.load_profile(),
+        "search_index": search_index(url),
         **extra,
     }

@@ -24,6 +24,17 @@ AI Lab page shows a demo video and answers recorded from the real pipeline.
 - **Evals**: a small evaluation set checks facts, refusals and prompt-injection behaviour,
   and is used to compare local models.
 
+## Design
+
+"The site looks like the systems I build": dark by default (with a light theme that is
+remembered), a pipeline diagram on the home page with data flowing from sources to AI
+answers, headline numbers styled as monitoring metrics, and section headings linked by a
+line like tasks in a DAG. Navigation has a sticky header with a scroll progress bar, a
+Cmd+K / Ctrl+K command palette for pages, roles, projects and skills, and a slide-in menu
+on mobile. Animations switch off when the visitor prefers reduced motion, and text meets
+WCAG AA contrast in both themes. Screenshots of every key page in both themes, desktop
+and mobile, are in [`docs/screenshots/`](docs/screenshots/).
+
 ## Two ways to run the same site
 
 | | Local (FastAPI) | Published (GitHub Pages) |
@@ -146,6 +157,7 @@ uv run python -m evals.record_examples       # recorded answers for the static A
 uv run python scripts/record_demo.py         # demo video (needs the local site running,
                                              # Chrome, ffmpeg, and: uv run playwright install ffmpeg)
 uv run python scripts/build_cv.py            # content/cv-public.pdf (needs Chrome)
+uv run python scripts/screenshots.py         # docs/screenshots/ (needs the local site running)
 ```
 
 Run the tests and evals:

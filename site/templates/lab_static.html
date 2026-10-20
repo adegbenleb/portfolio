@@ -52,11 +52,11 @@
   {% endif %}
 </section>
 
-<div class="lab-docs">
+<div class="lab-docs dag">
   {% for heading, html in lab.html_by_heading.items() %}
-  <section class="panel lab-doc" aria-labelledby="lab-doc-{{ loop.index }}">
-    <h2 id="lab-doc-{{ loop.index }}">{{ heading }}</h2>
-    <div class="prose">{{ html | safe }}</div>
+  <section class="dag-step lab-doc" aria-labelledby="lab-doc-{{ loop.index }}">
+    <h2 id="lab-doc-{{ loop.index }}" class="dag-title">{{ heading }}</h2>
+    <div class="panel prose">{{ html | safe }}</div>
   </section>
   {% endfor %}
   <p><a class="text-link" href="https://{{ profile.github }}/portfolio" rel="noopener">Source code on GitHub</a></p>
