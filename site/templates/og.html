@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    width: 1200px; height: 627px; overflow: hidden;
+    background-color: #050607;
+    background-image: linear-gradient(#0d1117 1px, transparent 1px), linear-gradient(90deg, #0d1117 1px, transparent 1px);
+    background-size: 48px 48px;
+    color: #e6edf3; font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
+    padding: 64px 72px; display: flex; flex-direction: column;
+  }
+  .top { display: flex; justify-content: space-between; align-items: center; }
+  .brand { display: flex; align-items: center; gap: 14px; font-family: "IBM Plex Mono", monospace; color: #9aa6b2; font-size: 20px; }
+  .box { width: 52px; height: 52px; border: 2px solid #22d3ee; color: #22d3ee; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 18px; }
+  .badge { display: flex; align-items: center; gap: 10px; border: 1px solid #1e2630; padding: 10px 16px; font-family: "IBM Plex Mono", monospace; font-size: 18px; color: #9aa6b2; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; background: #34d399; }
+  .kicker { margin-top: 40px; font-family: "IBM Plex Mono", monospace; color: #22d3ee; font-size: 22px; }
+  h1 { margin-top: 12px; font-size: 84px; line-height: 0.95; font-weight: 800; letter-spacing: -2px; text-transform: uppercase; }
+  .headline { margin-top: 20px; font-size: 30px; color: #c9d1d9; }
+  .metrics { margin-top: auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .metric { background: #0b0f14; border: 1px solid #1e2630; padding: 16px 20px; }
+  .label { font-family: "IBM Plex Mono", monospace; color: #9aa6b2; font-size: 16px; }
+  .value { margin-top: 4px; font-size: 44px; font-weight: 800; }
+  .value.accent { color: #22d3ee; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand"><span class="box">B.A</span>{{ profile.name | lower | replace(" ", ".") }}</div>
+    {% if profile.available %}<div class="badge"><span class="dot"></span>open to work · from {{ profile.available }}</div>{% endif %}
+  </div>
+  <p class="kicker">// {{ profile.headline.split(",")[0] | lower }} · {{ profile.location | lower }}</p>
+  <h1>{{ profile.name }}</h1>
+  <p class="headline">{{ profile.headline }}</p>
+  <div class="metrics">
+    {% for metric in metrics %}
+    <div class="metric"><p class="label">{{ metric.label }}</p><p class="value{% if loop.last %} accent{% endif %}">{{ metric.value }}</p></div>
+    {% endfor %}
+  </div>
+</body>
+</html>

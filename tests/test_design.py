@@ -2,6 +2,7 @@
 
 import json
 import re
+import struct
 from pathlib import Path
 
 import pytest
@@ -200,3 +201,24 @@ def test_static_lab_lists_every_cited_source(tmp_path):
         answer = re.search(r'<p class="answer-text">(.*?)</p>', article, re.S).group(1)
         listed = {int(n) for n in re.findall(r'<li value="(\d+)">', article)}
         assert _cited(answer) <= listed
+
+
+@pytest.mark.parametrize("path", PAGES)
+def test_every_page_has_share_preview_tags(path):
+    html = client.get(path).text
+    for prop in ("og:title", "og:description", "og:url", "og:type", "og:image"):
+        assert f'<meta property="{prop}" content="' in html, prop
+    assert '<meta name="twitter:card" content="summary_large_image">' in html
+    image = re.search(r'<meta property="og:image" content="([^"]+)"', html).group(1)
+    assert image == "https://adegbenleb.github.io/portfolio/static/og-image.png"
+    url = re.search(r'<meta property="og:url" content="([^"]+)"', html).group(1)
+    assert url.startswith("https://adegbenleb.github.io/portfolio/")
+    assert 'rel="icon" href="/static/favicon.svg' in html
+
+
+def test_share_image_is_1200_by_627_and_favicons_exist():
+    static = Path("site/static")
+    width, height = struct.unpack(">II", (static / "og-image.png").read_bytes()[16:24])
+    assert (width, height) == (1200, 627)
+    for name in ("favicon.svg", "favicon-32.png", "apple-touch-icon.png"):
+        assert (static / name).is_file()

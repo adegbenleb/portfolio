@@ -8,6 +8,7 @@ from the local one. The only differences are the URL scheme and the AI Lab page:
 
 import hashlib
 import json
+import os
 import re
 from collections.abc import Callable
 from pathlib import Path
@@ -20,6 +21,8 @@ RECORDED_EXAMPLES = ROOT / "evals" / "recorded_examples.json"
 DEMO_VIDEO = SITE_DIR / "static" / "demo.mp4"
 CV_PDF = ROOT / "content" / "cv-public.pdf"
 CV_DOWNLOAD_PATH = "files/Blessing_Adegbenle_CV.pdf"
+# Public address of the published site, used for absolute URLs in share previews.
+SITE_URL = os.getenv("SITE_URL", "https://adegbenleb.github.io/portfolio/").rstrip("/") + "/"
 
 # (path, key, label). "" is the home page.
 NAV = [
@@ -220,10 +223,26 @@ def search_index(url: Callable[[str], str]) -> list[dict]:
     return entries
 
 
+def share_meta(key: str, profile: dict) -> dict:
+    """Open Graph and Twitter card data for LinkedIn and other link previews."""
+    path = next(path for path, k, _label in NAV if k == key)
+    label = next(label for _path, k, label in NAV if k == key)
+    name, headline = profile["name"], profile["headline"]
+    return {
+        "title": f"{name}, {headline}" if key == "home" else f"{label}, {name}",
+        "description": profile.get("tagline") or profile["intro"],
+        "url": SITE_URL + (f"{path}/" if path else ""),
+        "image": SITE_URL + "static/og-image.png",
+        "image_alt": f"{name}, {headline}",
+    }
+
+
 def context(key: str, url: Callable[[str], str], static_site: bool = False) -> tuple[str, dict]:
     """Full template context: shared layout data plus the page's own data."""
     template, extra = page(key, static_site)
+    profile = content.load_profile()
     return template, {
+        "share": share_meta(key, profile),
         "nav": NAV,
         "active": key,
         "url": url,
