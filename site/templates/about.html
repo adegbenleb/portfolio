@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 {% block title %}About | {{ profile.name }}{% endblock %}
 {% block content %}
-<header class="page-header">
-  <h1>{{ about.title }}</h1>
-  <p class="lead">{{ profile.headline }}, based in {{ profile.location }}.</p>
+<header class="page-header about-header">
+  {% if profile.photo %}
+  <img class="profile-photo profile-photo-large" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="200" height="200">
+  {% endif %}
+  <div>
+    <h1>{{ about.title }}</h1>
+    <p class="lead">{{ profile.headline }}, based in {{ profile.location }}.</p>
+  </div>
 </header>
 
 <div class="about">

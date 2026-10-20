@@ -3,8 +3,15 @@
 {% block content %}
 <div class="home-top">
   <section class="hero">
-    <p class="eyebrow">{{ profile.location }}</p>
-    <h1>{{ profile.name }}</h1>
+    <div class="hero-identity">
+      {% if profile.photo %}
+      <img class="profile-photo" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="160" height="160">
+      {% endif %}
+      <div>
+        <p class="eyebrow">{{ profile.location }}</p>
+        <h1>{{ profile.name }}</h1>
+      </div>
+    </div>
     <p class="headline">{{ profile.headline }}</p>
     <p class="intro">{{ profile.intro }}</p>
     {% if profile.relocation or profile.available %}

@@ -931,3 +931,50 @@ dd {
 .recorded .cards {
   align-items: start;
 }
+
+/* Profile photo */
+
+.hero-identity {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-identity h1 {
+  margin-bottom: 0;
+}
+
+.profile-photo {
+  flex-shrink: 0;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--surface);
+  box-shadow: 0 0 0 2px var(--accent-soft), 0 6px 20px rgb(0 0 0 / 12%);
+}
+
+.profile-photo-large {
+  width: 200px;
+  height: 200px;
+}
+
+.about-header {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+@media (max-width: 600px) {
+  .hero-identity,
+  .about-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .profile-photo {
+    width: 120px;
+    height: 120px;
+  }
+}

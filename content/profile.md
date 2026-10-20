@@ -7,6 +7,7 @@ linkedin: linkedin.com/in/blessing-ayodeji
 github: github.com/adegbenleb
 languages: [English (fluent), German (B2)]
 relocation: Open to relocation within Germany
+photo: profile.jpg
 available_from: 2026-12
 highlights:
   - {value: "4+", label: years experience}

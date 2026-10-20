@@ -92,3 +92,12 @@ def test_home_shows_key_facts_and_explore_cards():
     html = client.get("/").text
     for text in ("Key facts", "Explore", "data engineering roles", "Available from 12/2026"):
         assert text in html
+
+
+@pytest.mark.parametrize("path", ["/", "/about"])
+def test_profile_photo_is_shown_with_alt_text(path):
+    html = client.get(path).text
+    assert 'src="/static/profile.jpg" alt="Photo of Blessing Adegbenle"' in html
+    image = client.get("/static/profile.jpg")
+    assert image.status_code == 200
+    assert image.headers["content-type"] == "image/jpeg"
