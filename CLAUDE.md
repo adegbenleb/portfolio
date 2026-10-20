@@ -35,6 +35,7 @@ from the same Markdown files in `content/`.
 - Static build: `uv run python build.py` (dist/, not committed; `--base /` for a custom domain)
 - Recorded examples for the static AI Lab: `uv run python -m evals.record_examples`
 - Demo video: `uv run python scripts/record_demo.py` (local site, Qdrant, Ollama running)
+- Public CV PDF: `uv run python scripts/build_cv.py` (writes content/cv-public.pdf; commit it)
 - Lint and test: `uv run ruff check . --fix && uv run ruff format . && uv run pytest -q`
 
 ## How the AI Lab works
@@ -62,8 +63,11 @@ from the same Markdown files in `content/`.
 
 ## Rules
 - `content/` is the single source of truth. Pages and the RAG index never hold facts of their own.
-- After editing anything in `content/`, re-run `uv run python -m rag.ingest`. Otherwise the
-  pages show the new text but the AI Lab still answers from the old index.
+- After editing anything in `content/`, re-run `uv run python -m rag.ingest` and
+  `uv run python scripts/build_cv.py`. Otherwise the pages show the new text but the AI Lab
+  and the CV PDF still use the old content.
+- Never start chunk text with the name "Blessing" for whole groups of chunks: it makes them
+  match every question that mentions the name (this broke three evals once).
 - After changing chunking, the prompt, the threshold or the model, re-run the evals, then
   re-record the examples (and the demo video if the lab page changed).
 - Never invent facts about Blessing. Everything must come from the CV or the content files.

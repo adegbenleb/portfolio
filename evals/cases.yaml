@@ -23,7 +23,8 @@
 
 - question: Which vector database does he use?
   must_contain: [Qdrant]
-  must_not_contain: [Neo4j]  # graph database, not a vector database
+  # Neo4j is a graph database. Naming it as such is fine; calling it a vector database is not.
+  must_not_contain: ["vector databases", "Neo4j as a vector", "Neo4j (vector"]
 
 - question: What languages does he speak?
   must_contain: [English, German]
@@ -35,6 +36,15 @@
 
 - question: Tell me about ShopFlow
   must_contain: [dbt, Airflow]
+
+- question: What is AdhereAI?
+  must_contain: [health, non-communicable]
+
+- question: What was his role in AdhereAI?
+  must_contain: [data collection]
+
+- question: Can he start soon?
+  must_contain_any: ["12/2026", "December 2026"]
 
 - question: Does he have Kubernetes experience?
   must_contain_any: ["doesn't mention", "does not mention", "not mentioned", "no mention"]

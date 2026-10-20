@@ -19,7 +19,7 @@ QUESTIONS = [
     "What did he do at Miele?",
     "Which data warehouse did he use at GI Group?",
     "What is the ShopFlow project?",
-    "What languages does he speak?",
+    "What is AdhereAI?",
     "What is the weather in Berlin?",
 ]
 

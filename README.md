@@ -13,8 +13,10 @@ AI Lab page shows a demo video and answers recorded from the real pipeline.
 
 ## What it does
 
-- **Pages**: Home, Experience, Projects, Skills, AI Lab and Contact, rendered from Markdown
-  files at request time.
+- **Pages**: Home, About, Experience (with case studies), Projects (with filters and status),
+  Skills, AI Lab, Media (demo video and CV download) and Contact, all rendered from Markdown
+  files.
+- **Public CV**: a PDF generated from the same content files, without a phone number.
 - **AI Lab**: ask a question such as "What did he do at Miele?" and get a short answer with
   numbered sources pointing at the exact CV bullets it used.
 - **Guardrails**: off-topic questions get a fixed answer without calling the LLM, and answers
@@ -80,8 +82,10 @@ bullets ranked sixth or lower.
 contain, a question outside the profile (Kubernetes), a phone-number request, an off-topic
 question and a prompt injection. Results are saved in `evals/results/`.
 
-Latest run with the default model: **12/12 passed, average 2.9 s** (llama3.1:8b, after adding
-a case about availability and relocation).
+Latest run with the default model: **15/15 passed, average 4.0 s** (llama3.1:8b). Adding the
+About page first broke three cases: every About chunk started with "About Blessing", so they
+matched any question with the name in it and pushed the real answers out of the top 5. The
+evals caught it, and prefixing those chunks with their section heading fixed it.
 
 Model comparison (October 2026, 11 cases, threshold 0.58, nomic-embed-text, on an Apple M4):
 
@@ -141,6 +145,7 @@ uv run python build.py --base /              # for a custom domain
 uv run python -m evals.record_examples       # recorded answers for the static AI Lab page
 uv run python scripts/record_demo.py         # demo video (needs the local site running,
                                              # Chrome, ffmpeg, and: uv run playwright install ffmpeg)
+uv run python scripts/build_cv.py            # content/cv-public.pdf (needs Chrome)
 ```
 
 Run the tests and evals:
@@ -155,10 +160,10 @@ OLLAMA_MODEL=qwen2.5:7b uv run python -m evals.run_evals   # compare another mod
 
 | Path | What it holds |
 |---|---|
-| `content/` | Profile, skills, experience and projects in Markdown |
+| `content/` | Profile, about, skills, experience, projects and AI Lab docs in Markdown, plus the public CV PDF |
 | `api/` | FastAPI app, page definitions and the content reader |
 | `build.py` | Static build for GitHub Pages |
-| `scripts/` | Demo video recorder (Playwright) |
+| `scripts/` | Demo video recorder and CV PDF generator (Playwright) |
 | `.github/workflows/` | Lint, test, build and deploy to GitHub Pages |
 | `site/` | Jinja2 templates, CSS and the AI Lab script |
 | `rag/` | Chunking, ingestion, search, answers and the grounding check |

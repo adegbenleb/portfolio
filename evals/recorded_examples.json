@@ -4,7 +4,7 @@
   "examples": [
     {
       "question": "Where does Blessing work now?",
-      "answer": "Blessing works as a Data Engineer at Phaina, based in Bielefeld, Germany [3].",
+      "answer": "Blessing currently works at Phaina as a Data Engineer, based in Bielefeld, Germany [3].",
       "sources": [
         {
           "n": 3,
@@ -16,7 +16,7 @@
     },
     {
       "question": "What did he do at Miele?",
-      "answer": "Blessing worked as a Data Engineer at Miele from 08/2024 to 03/2026. He built batch ETL pipelines on Databricks with PySpark, automated testing and deployment with CI/CD and Terraform, and delivered Power BI semantic models and dashboards. He also extracted SAP FI/CO data via OData services and BAPIs with Azure Data Factory, and developed the gold layer as dbt models with dimensional modeling. [1, 2, 3, 4, 6, 7]",
+      "answer": "Blessing worked as a Data Engineer at Miele from 08/2024 to 03/2026. He built batch ETL pipelines on Databricks with PySpark, automated testing and deployment with CI/CD and Terraform, and delivered Power BI semantic models and dashboards with traceable KPIs for finance and business stakeholders. He also extracted SAP FI/CO data via OData services and BAPIs with Azure Data Factory, and developed the gold layer as dbt models with dimensional modeling. [1, 2, 3, 4, 6, 7, 8]",
       "sources": [
         {
           "n": 1,
@@ -53,12 +53,18 @@
           "label": "Miele",
           "section": "experience",
           "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Developed the gold layer as dbt models with dimensional modeling, slowly-changing dimensions and incremental loads, plus dbt tests and docs."
+        },
+        {
+          "n": 8,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: case study. Problem: Finance and business stakeholders needed traceable KPIs built on SAP FI/CO data. What I did: Extracted SAP FI/CO data via OData services and BAPIs with…"
         }
       ]
     },
     {
       "question": "Which data warehouse did he use at GI Group?",
-      "answer": "Blessing used Snowflake at GI Group [1, 2, 6].",
+      "answer": "Blessing used Snowflake at GI Group [1, 2, 3, 8].",
       "sources": [
         {
           "n": 1,
@@ -70,10 +76,16 @@
           "n": 2,
           "label": "GI Group",
           "section": "experience",
+          "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: case study. Problem: Marketing data from GA4 and Google Tag Manager sat in a BigQuery export on Google Cloud, separate from CRM and business data. What I did: Built Python…"
+        },
+        {
+          "n": 3,
+          "label": "GI Group",
+          "section": "experience",
           "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: Loaded GA4 and Google Tag Manager data from its BigQuery export on Google Cloud into Snowflake, joining marketing data with CRM and business data."
         },
         {
-          "n": 6,
+          "n": 8,
           "label": "GI Group",
           "section": "experience",
           "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: Modeled data in Snowflake with complex SQL, using PostgreSQL and MongoDB as source systems and DuckDB for local analysis."
@@ -82,13 +94,19 @@
     },
     {
       "question": "What is the ShopFlow project?",
-      "answer": "The ShopFlow project is a personal learning project that builds a complete analytics platform on the public Olist dataset, almost 100,000 orders from a Brazilian marketplace [1]. It is a comprehensive platform that includes a FastAPI backend, an Airflow pipeline, and a Neo4j graph to analyze buying patterns [3, 4, 5].",
+      "answer": "The ShopFlow project is a personal learning project that builds a complete analytics platform on the public Olist dataset, almost 100,000 orders from a Brazilian marketplace [1]. It is an ongoing project that uses various tools, including Python, SQL, dbt, Airflow, and more [2]. The project includes a FastAPI backend, an Airflow pipeline, and a Neo4j graph to analyze buying patterns [3, 4, 5]. It also features a LangGraph agent that answers questions about sales, delivery times, and customer regions [6].",
       "sources": [
         {
           "n": 1,
           "label": "ShopFlow: E-commerce Analytics Platform",
           "section": "project",
           "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): A learning project that builds a complete analytics platform on the public Olist dataset, almost 100,000 orders from a Brazilian…"
+        },
+        {
+          "n": 2,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): tools used: Python, SQL, dbt, Airflow, PostgreSQL, Neo4j, LangGraph, Ollama, FastAPI, Docker, GitHub Actions. Status: ongoing.…"
         },
         {
           "n": 3,
@@ -107,24 +125,30 @@
           "label": "ShopFlow: E-commerce Analytics Platform",
           "section": "project",
           "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): Order data is also modelled as a Neo4j graph to analyse buying patterns."
+        },
+        {
+          "n": 6,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): A LangGraph agent running on a local LLM through Ollama answers questions about sales, delivery times and customer regions. It…"
         }
       ]
     },
     {
-      "question": "What languages does he speak?",
-      "answer": "Blessing speaks English (fluent) and German (B2) [1, 2].",
+      "question": "What is AdhereAI?",
+      "answer": "AdhereAI is a health app that helps people with non-communicable diseases manage their treatment and recovery, connecting them with doctors, pharmacists, drug stores, and ambulance services [1]. It was designed to collect and manage patient data, including medication schedules, adherence check-ins, symptom reports, and health readings [5].",
       "sources": [
         {
           "n": 1,
-          "label": "Skills: Languages",
-          "section": "skills",
-          "snippet": "Skills, Languages: English (fluent), German (B2)"
+          "label": "AdhereAI: Health App for Patients with Non-Communicable Diseases",
+          "section": "project",
+          "snippet": "AdhereAI: Health App for Patients with Non-Communicable Diseases (competition project, 04/2026 to Present): AdhereAI is a health app that helps people with non-communicable diseases manage their treatment and recovery,…"
         },
         {
-          "n": 2,
-          "label": "Profile",
-          "section": "profile",
-          "snippet": "Profile: Blessing Adegbenle, Data Engineer, data pipelines for AI and analytics. Based in Bielefeld, Germany. Languages: English (fluent), German (B2)."
+          "n": 5,
+          "label": "AdhereAI: Health App for Patients with Non-Communicable Diseases",
+          "section": "project",
+          "snippet": "AdhereAI: Health App for Patients with Non-Communicable Diseases (competition project, 04/2026 to Present): Built Python pipelines that collect patient onboarding data, medication schedules, adherence check-ins, symptom…"
         }
       ]
     },

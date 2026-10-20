@@ -26,13 +26,13 @@ def test_every_experience_bullet_is_a_chunk_with_context_prefix():
     assert all(c.text.startswith(prefix) for c in phaina)
     bullets = [c for c in phaina if c.text.startswith(prefix + "Built Python ingestion")]
     assert len(bullets) == 1
-    # One overview chunk, the Argus intro line and six bullets.
-    assert len(phaina) == 8
+    # One overview chunk, the Argus intro line, six bullets and the case study.
+    assert len(phaina) == 9
 
 
 def test_miele_chunks_carry_the_cv_dates():
     miele = [c for c in experience_chunks() if c.label == "Miele"]
-    assert len(miele) == 7
+    assert len(miele) == 8
     assert all(c.dates == "08/2024 to 03/2026" for c in miele)
     assert all(c.payload["company"] == "Miele" for c in miele)
 
@@ -52,7 +52,7 @@ def test_chunk_ids_are_unique_and_stable():
 def test_payload_has_required_fields():
     for chunk in build_chunks():
         assert {"text", "file", "section", "label", "dates"} <= set(chunk.payload)
-        assert chunk.section in {"profile", "experience", "skills", "project"}
+        assert chunk.section in {"profile", "about", "experience", "skills", "project"}
 
 
 def test_no_chunk_contains_a_phone_number():

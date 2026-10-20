@@ -18,7 +18,7 @@ ID_NAMESPACE = uuid.UUID("6f1d4c2e-8a57-4b0e-9c1d-2b7e5f3a9d10")
 class Chunk:
     text: str
     file: str
-    section: str  # profile, experience, skills or project
+    section: str  # profile, about, experience, skills or project
     label: str  # company for experience, otherwise a title
     dates: str = ""
     index: int = 0  # position within its file, used for the stable ID
@@ -77,6 +77,9 @@ def experience_chunks() -> list[Chunk]:
             *(f"{prefix}: {paragraph}" for paragraph in role["intro"]),
             *(f"{prefix}: {bullet}" for bullet in role["bullets"]),
         ]
+        if role.get("case_study"):
+            steps = " ".join(f"{item['label']}: {item['text']}" for item in role["case_study"])
+            texts.append(f"{prefix}: case study. {steps}")
         chunks += [
             Chunk(
                 text=text,
@@ -110,9 +113,19 @@ def project_chunks() -> list[Chunk]:
     for project in content.load_projects():
         dates = date_range(project["start"], project["end"], separator=" to ")
         prefix = f"{project['title']} ({project['type']}, {dates})"
+        facts = [f"tools used: {', '.join(project['tags'])}."]
+        if project.get("status_label"):
+            facts.append(f"Status: {project['status_label'].lower()}.")
+        if project.get("result"):
+            facts.append(f"Result: {project['result']}.")
+        if project.get("url"):
+            facts.append(f"Live at {project['url']}.")
+        if project.get("github"):
+            facts.append(f"Code: {project['github']}.")
         texts = [
-            f"{prefix}: tools used: {', '.join(project['tags'])}. Code: {project['github']}.",
+            f"{prefix}: " + " ".join(facts),
             *(f"{prefix}: {paragraph}" for paragraph in project["paragraphs"]),
+            *(f"{prefix}: {bullet}" for bullet in project["bullets"]),
         ]
         chunks += [
             Chunk(
@@ -129,5 +142,28 @@ def project_chunks() -> list[Chunk]:
     return chunks
 
 
+def about_chunks() -> list[Chunk]:
+    """One chunk per paragraph of the About page, prefixed with its section heading."""
+    about = content.load_page("about")
+    chunks = []
+    for section in about["sections"]:
+        heading = section["heading"] or about.get("title", "About")
+        for paragraph in section["paragraphs"]:
+            chunks.append(
+                Chunk(
+                    # The heading, not "About Blessing": a name in every chunk made them all
+                    # match any question that mentions Blessing.
+                    text=f"{heading}: {paragraph}",
+                    file=about["file"],
+                    section="about",
+                    label=f"About: {heading}",
+                    index=len(chunks),
+                )
+            )
+    return chunks
+
+
 def build_chunks() -> list[Chunk]:
-    return profile_chunks() + experience_chunks() + skills_chunks() + project_chunks()
+    return (
+        profile_chunks() + about_chunks() + experience_chunks() + skills_chunks() + project_chunks()
+    )
