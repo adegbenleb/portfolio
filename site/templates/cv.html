@@ -5,7 +5,9 @@
   <title>{{ profile.name }}, CV</title>
   <style>
     @page { size: A4; margin: 14mm 15mm 12mm; }
-    * { box-sizing: border-box; }
+    /* No ligatures: applicant tracking systems must read "Snowflake", not "Snow?ake".
+       On every element, because the "font" shorthand on body would reset it. */
+    * { box-sizing: border-box; font-variant-ligatures: none; }
     body { margin: 0; color: #1c1f24; font: 9.2pt/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; }
     h1 { margin: 0; font-size: 21pt; letter-spacing: -0.01em; }
     h2 { margin: 11pt 0 4pt; padding-bottom: 2pt; border-bottom: 1.2pt solid #0f6b5c; color: #0f6b5c;
