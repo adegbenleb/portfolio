@@ -1,6 +1,8 @@
 ---
 title: "ShopFlow: E-commerce Analytics Platform"
 type: personal learning project
+category: Personal
+result: almost 100,000 orders modelled, around 40 dbt tests
 start: 2026-10
 end: present
 github: github.com/adegbenleb
