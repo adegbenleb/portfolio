@@ -6,10 +6,16 @@
   <h1>{{ profile.name }}</h1>
   <p class="headline">{{ profile.headline }}</p>
   <p class="intro">{{ profile.intro }}</p>
+  {% if profile.relocation or profile.available %}
+  <p class="availability">
+    {% if profile.relocation %}<span>{{ profile.relocation }}</span>{% endif %}
+    {% if profile.available %}<span>Available from {{ profile.available }}</span>{% endif %}
+  </p>
+  {% endif %}
   <div class="actions">
-    <a class="button button-primary" href="/experience">View experience</a>
-    <a class="button" href="/projects">Projects</a>
-    <a class="button" href="/contact">Contact</a>
+    <a class="button button-primary" href="{{ url('experience') }}">View experience</a>
+    <a class="button" href="{{ url('projects') }}">Projects</a>
+    <a class="button" href="{{ url('contact') }}">Contact</a>
   </div>
 </section>
 
@@ -30,6 +36,6 @@
     <h2 id="lab-heading">AI Lab</h2>
     <p>Ask questions about my experience, skills and projects. Answers come from the same content you see on this site, with sources.</p>
   </div>
-  <a class="button button-primary" href="/lab">Open the AI Lab</a>
+  <a class="button button-primary" href="{{ url('lab') }}">Open the AI Lab</a>
 </aside>
 {% endblock %}

@@ -1,8 +1,13 @@
 # Blessing Adegbenle: Portfolio and AI Lab
 
 My personal portfolio site, with an **AI Lab** that answers questions about my experience,
-skills and projects using retrieval-augmented generation (RAG). Everything runs locally:
-a local LLM through Ollama, Qdrant for vector search, and FastAPI for the site.
+skills and projects using retrieval-augmented generation (RAG).
+
+**Live site: https://adegbenleb.github.io/portfolio/**
+
+The site is published as static pages on GitHub Pages. The AI Lab itself runs on a local LLM
+(Ollama) with Qdrant for vector search, so it is live during demos on my machine; the published
+AI Lab page shows a demo video and answers recorded from the real pipeline.
 
 ![Home page](docs/screenshot.png)
 
@@ -16,6 +21,18 @@ a local LLM through Ollama, Qdrant for vector search, and FastAPI for the site.
   that name tools not found in the retrieved sources are regenerated or trimmed.
 - **Evals**: a small evaluation set checks facts, refusals and prompt-injection behaviour,
   and is used to compare local models.
+
+## Two ways to run the same site
+
+| | Local (FastAPI) | Published (GitHub Pages) |
+|---|---|---|
+| Pages | rendered per request | pre-rendered by `build.py` |
+| AI Lab | live: asks the local LLM | demo video + recorded examples |
+| Needs | Ollama, Qdrant (Docker) | nothing, static files |
+
+Both render the same Jinja templates with the same context (`api/pages.py`), so they cannot
+drift apart. A GitHub Actions workflow lints, tests, builds and deploys on every push to
+`main`.
 
 ## Architecture
 
@@ -63,7 +80,10 @@ bullets ranked sixth or lower.
 contain, a question outside the profile (Kubernetes), a phone-number request, an off-topic
 question and a prompt injection. Results are saved in `evals/results/`.
 
-Latest run (October 2026, threshold 0.58, nomic-embed-text, on an Apple M4):
+Latest run with the default model: **12/12 passed, average 2.9 s** (llama3.1:8b, after adding
+a case about availability and relocation).
+
+Model comparison (October 2026, 11 cases, threshold 0.58, nomic-embed-text, on an Apple M4):
 
 | # | Question | llama3.1:8b | qwen2.5:7b |
 |---|---|---|---|
@@ -113,6 +133,16 @@ uv run python -m rag.ingest
 uv run uvicorn api.main:app --port 18600 --reload
 ```
 
+Build the static site, record examples and the demo video:
+
+```bash
+uv run python build.py                       # writes dist/ (for /portfolio/ on github.io)
+uv run python build.py --base /              # for a custom domain
+uv run python -m evals.record_examples       # recorded answers for the static AI Lab page
+uv run python scripts/record_demo.py         # demo video (needs the local site running,
+                                             # Chrome, ffmpeg, and: uv run playwright install ffmpeg)
+```
+
 Run the tests and evals:
 
 ```bash
@@ -126,14 +156,17 @@ OLLAMA_MODEL=qwen2.5:7b uv run python -m evals.run_evals   # compare another mod
 | Path | What it holds |
 |---|---|
 | `content/` | Profile, skills, experience and projects in Markdown |
-| `api/` | FastAPI app and the content reader |
+| `api/` | FastAPI app, page definitions and the content reader |
+| `build.py` | Static build for GitHub Pages |
+| `scripts/` | Demo video recorder (Playwright) |
+| `.github/workflows/` | Lint, test, build and deploy to GitHub Pages |
 | `site/` | Jinja2 templates, CSS and the AI Lab script |
 | `rag/` | Chunking, ingestion, search, answers and the grounding check |
-| `evals/` | Evaluation cases, runner and saved results |
+| `evals/` | Evaluation cases, runner, saved results and recorded examples |
 | `docker/` | Compose file for Qdrant |
 | `tests/` | Unit tests (pytest) |
 
 ## Stack
 
 Python 3.12, FastAPI, Jinja2, Qdrant, Ollama (llama3.1:8b, nomic-embed-text), pytest, ruff, uv,
-Docker.
+Docker, Playwright, GitHub Actions, GitHub Pages.

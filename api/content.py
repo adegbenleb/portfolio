@@ -70,6 +70,7 @@ def load_profile() -> dict:
         "file": "content/profile.md",
         "summary": summary,
         "intro": " ".join(sentences[:2]),
+        "available": format_month(post["available_from"]) if "available_from" in post else "",
         "sections": sections,
     }
 

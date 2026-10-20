@@ -51,6 +51,11 @@ def profile_chunks() -> list[Chunk]:
         f"Contact details for {profile['name']}: email {profile['email']}, "
         f"LinkedIn {profile['linkedin']}, GitHub {profile['github']}.",
     ]
+    if profile.get("relocation") or profile.get("available"):
+        texts.append(
+            f"Availability for new roles: {profile.get('relocation', '')}. "
+            f"Available to start from {profile['available']}."
+        )
     for section in profile["sections"]:
         items = [plain(item) for item in section["bullets"] + section["paragraphs"]]
         texts.append(f"{section['heading']}: " + " ".join(items))

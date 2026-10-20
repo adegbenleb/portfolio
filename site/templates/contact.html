@@ -23,5 +23,17 @@
     <dt>Location</dt>
     <dd>{{ profile.location }}</dd>
   </div>
+  {% if profile.relocation %}
+  <div class="contact-row">
+    <dt>Relocation</dt>
+    <dd>{{ profile.relocation }}</dd>
+  </div>
+  {% endif %}
+  {% if profile.available %}
+  <div class="contact-row">
+    <dt>Available from</dt>
+    <dd>{{ profile.available }}</dd>
+  </div>
+  {% endif %}
 </dl>
 {% endblock %}

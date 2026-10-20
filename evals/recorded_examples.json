@@ -1,0 +1,138 @@
+{
+  "recorded_on": "20 October 2026",
+  "model": "llama3.1:8b",
+  "examples": [
+    {
+      "question": "Where does Blessing work now?",
+      "answer": "Blessing works as a Data Engineer at Phaina, based in Bielefeld, Germany [3].",
+      "sources": [
+        {
+          "n": 3,
+          "label": "Phaina",
+          "section": "experience",
+          "snippet": "Phaina, Data Engineer, 05/2026 to Present: worked as Data Engineer at Phaina (location: Bielefeld, Germany). This is Blessing's current role. Tools used: Python, PostgreSQL, Qdrant, Neo4j, RAG, Agno, LangSmith, GraphQL,…"
+        }
+      ]
+    },
+    {
+      "question": "What did he do at Miele?",
+      "answer": "Blessing worked as a Data Engineer at Miele from 08/2024 to 03/2026. He built batch ETL pipelines on Databricks with PySpark, automated testing and deployment with CI/CD and Terraform, and delivered Power BI semantic models and dashboards. He also extracted SAP FI/CO data via OData services and BAPIs with Azure Data Factory, and developed the gold layer as dbt models with dimensional modeling. [1, 2, 3, 4, 6, 7]",
+      "sources": [
+        {
+          "n": 1,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: worked as Data Engineer at Miele (location: Remote, Germany). Tools used: SAP, Azure Data Factory, Databricks, PySpark, Delta Lake, dbt, Great Expectations, Unity Catalog, Power…"
+        },
+        {
+          "n": 2,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Built batch ETL pipelines on Databricks with PySpark, cleaning and standardising data through bronze and silver layers in Delta Lake."
+        },
+        {
+          "n": 3,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Automated testing and deployment with CI/CD and Terraform, and tuned Spark jobs for speed and cost."
+        },
+        {
+          "n": 4,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Delivered Power BI semantic models and dashboards with traceable KPIs for finance and business stakeholders."
+        },
+        {
+          "n": 6,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Extracted SAP FI/CO data via OData services and BAPIs with Azure Data Factory, loading it into the Databricks Lakehouse for finance and operational reporting."
+        },
+        {
+          "n": 7,
+          "label": "Miele",
+          "section": "experience",
+          "snippet": "Miele, Data Engineer, 08/2024 to 03/2026: Developed the gold layer as dbt models with dimensional modeling, slowly-changing dimensions and incremental loads, plus dbt tests and docs."
+        }
+      ]
+    },
+    {
+      "question": "Which data warehouse did he use at GI Group?",
+      "answer": "Blessing used Snowflake at GI Group [1, 2, 6].",
+      "sources": [
+        {
+          "n": 1,
+          "label": "GI Group",
+          "section": "experience",
+          "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: worked as Data Engineer at GI Group (location: Bielefeld, Germany). Tools used: Python, SQL, Airflow, Git, Docker, Snowflake, PostgreSQL, MongoDB, DuckDB, BigQuery, Google…"
+        },
+        {
+          "n": 2,
+          "label": "GI Group",
+          "section": "experience",
+          "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: Loaded GA4 and Google Tag Manager data from its BigQuery export on Google Cloud into Snowflake, joining marketing data with CRM and business data."
+        },
+        {
+          "n": 6,
+          "label": "GI Group",
+          "section": "experience",
+          "snippet": "GI Group, Data Engineer, 07/2022 to 07/2024: Modeled data in Snowflake with complex SQL, using PostgreSQL and MongoDB as source systems and DuckDB for local analysis."
+        }
+      ]
+    },
+    {
+      "question": "What is the ShopFlow project?",
+      "answer": "The ShopFlow project is a personal learning project that builds a complete analytics platform on the public Olist dataset, almost 100,000 orders from a Brazilian marketplace [1]. It is a comprehensive platform that includes a FastAPI backend, an Airflow pipeline, and a Neo4j graph to analyze buying patterns [3, 4, 5].",
+      "sources": [
+        {
+          "n": 1,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): A learning project that builds a complete analytics platform on the public Olist dataset, almost 100,000 orders from a Brazilian…"
+        },
+        {
+          "n": 3,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): A FastAPI backend serves a simple web interface."
+        },
+        {
+          "n": 4,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): An Airflow pipeline loads raw CSV files into PostgreSQL with lineage columns, then runs dbt to build staging models and a gold…"
+        },
+        {
+          "n": 5,
+          "label": "ShopFlow: E-commerce Analytics Platform",
+          "section": "project",
+          "snippet": "ShopFlow: E-commerce Analytics Platform (personal learning project, 10/2026 to Present): Order data is also modelled as a Neo4j graph to analyse buying patterns."
+        }
+      ]
+    },
+    {
+      "question": "What languages does he speak?",
+      "answer": "Blessing speaks English (fluent) and German (B2) [1, 2].",
+      "sources": [
+        {
+          "n": 1,
+          "label": "Skills: Languages",
+          "section": "skills",
+          "snippet": "Skills, Languages: English (fluent), German (B2)"
+        },
+        {
+          "n": 2,
+          "label": "Profile",
+          "section": "profile",
+          "snippet": "Profile: Blessing Adegbenle, Data Engineer, data pipelines for AI and analytics. Based in Bielefeld, Germany. Languages: English (fluent), German (B2)."
+        }
+      ]
+    },
+    {
+      "question": "What is the weather in Berlin?",
+      "answer": "I can only answer questions about Blessing's experience, skills and projects.",
+      "sources": [],
+      "note": "Off-topic question: no chunk matched well enough, so the guardrail answered without calling the LLM."
+    }
+  ]
+}

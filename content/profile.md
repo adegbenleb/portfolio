@@ -6,6 +6,8 @@ email: adegbenleb@gmail.com
 linkedin: linkedin.com/in/blessing-ayodeji
 github: github.com/adegbenleb
 languages: [English (fluent), German (B2)]
+relocation: Open to relocation within Germany
+available_from: 2026-12
 highlights:
   - {value: "4+", label: years experience}
   - {value: "500,000+", label: products}

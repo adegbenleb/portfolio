@@ -3,7 +3,6 @@
 import asyncio
 import logging
 from contextlib import asynccontextmanager
-from pathlib import Path
 from typing import Annotated
 
 import httpx
@@ -14,24 +13,15 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, StringConstraints
 
-from api import content
+from api import pages
+from api.pages import SITE_DIR, make_url
 from rag import answer as rag_answer
 from rag.config import settings
 from rag.services import ServiceUnavailable, collection_size
 
-SITE_DIR = Path(__file__).resolve().parent.parent / "site"
 HEALTH_TIMEOUT_SECONDS = 2.0
 
 logger = logging.getLogger("uvicorn.error")
-
-NAV = [
-    ("/", "home", "Home"),
-    ("/experience", "experience", "Experience"),
-    ("/projects", "projects", "Projects"),
-    ("/skills", "skills", "Skills"),
-    ("/lab", "lab", "AI Lab"),
-    ("/contact", "contact", "Contact"),
-]
 
 
 @asynccontextmanager
@@ -48,54 +38,47 @@ async def lifespan(app: FastAPI):
     yield
 
 
-LAB_EXAMPLES = [
-    "Where does Blessing work now?",
-    "What did he do at Miele?",
-    "Which vector database does he use?",
-    "Tell me about ShopFlow",
-]
-
 app = FastAPI(title="Blessing Adegbenle Portfolio", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=SITE_DIR / "static"), name="static")
 templates = Jinja2Templates(directory=SITE_DIR / "templates")
 
 
-def render(request: Request, template: str, active: str, **context) -> HTMLResponse:
-    return templates.TemplateResponse(
-        request,
-        template,
-        {"nav": NAV, "active": active, "profile": content.load_profile(), **context},
-    )
+live_url = make_url("/")
+
+
+def render(request: Request, key: str) -> HTMLResponse:
+    template, page_context = pages.context(key, live_url)
+    return templates.TemplateResponse(request, template, page_context)
 
 
 @app.get("/", response_class=HTMLResponse)
 def home(request: Request):
-    return render(request, "home.html", "home")
+    return render(request, "home")
 
 
 @app.get("/experience", response_class=HTMLResponse)
 def experience(request: Request):
-    return render(request, "experience.html", "experience", roles=content.load_experience())
+    return render(request, "experience")
 
 
 @app.get("/projects", response_class=HTMLResponse)
 def projects(request: Request):
-    return render(request, "projects.html", "projects", projects=content.load_projects())
+    return render(request, "projects")
 
 
 @app.get("/skills", response_class=HTMLResponse)
 def skills(request: Request):
-    return render(request, "skills.html", "skills", groups=content.load_skills())
+    return render(request, "skills")
 
 
 @app.get("/lab", response_class=HTMLResponse)
 def lab(request: Request):
-    return render(request, "lab.html", "lab", examples=LAB_EXAMPLES)
+    return render(request, "lab")
 
 
 @app.get("/contact", response_class=HTMLResponse)
 def contact(request: Request):
-    return render(request, "contact.html", "contact")
+    return render(request, "contact")
 
 
 async def _responds(client: httpx.AsyncClient, url: str) -> bool:
