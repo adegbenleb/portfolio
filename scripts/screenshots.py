@@ -4,11 +4,13 @@ Needs the local site running (uv run uvicorn api.main:app --port 18600) and Goog
 Run with: uv run python scripts/screenshots.py   Writes docs/screenshots/<page>-<device>.jpg
 """
 
+import os
 from pathlib import Path
 
 from playwright.sync_api import sync_playwright
 
-SITE = "http://localhost:18600"
+# Local site by default; SITE=https://adegbenleb.github.io/portfolio for the live one.
+SITE = os.getenv("SITE", "http://localhost:18600").rstrip("/")
 OUT = Path(__file__).resolve().parent.parent / "docs" / "screenshots"
 PAGES = {
     "home": "/",
@@ -41,9 +43,10 @@ def main() -> None:
             context = browser.new_context(**options, reduced_motion="reduce")
             page = context.new_page()
             for name, path in PAGES.items():
-                page.goto(SITE + path, wait_until="networkidle")
+                live_path = path if SITE.startswith("http://localhost") else path.rstrip("/") + "/"
+                page.goto(SITE + live_path, wait_until="networkidle")
                 page.evaluate("document.fonts.ready")
-                if name == "lab":
+                if name == "lab" and page.locator(".status[data-service]").count():
                     page.wait_for_selector(".status:not([data-state='checking'])")
                 target = OUT / f"{name}-{device}.jpg"
                 page.screenshot(path=str(target), full_page=True, type="jpeg", quality=70)
