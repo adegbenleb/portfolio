@@ -1,62 +1,48 @@
 {% extends "base.html" %}
-{% block title %}AI Lab | {{ profile.name }}{% endblock %}
+{% block title %}AI Lab, {{ profile.name }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h1>AI Lab</h1>
-  <p class="lead">Ask a question about my experience, skills or projects. Answers are written by a local LLM using only the content on this site, and every answer lists its sources.</p>
+  <p class="section-label">ai-lab · rag over my profile</p>
+  <h1 class="page-title">AI Lab</h1>
+  <p class="page-lead">Ask a question about my experience, skills or projects. Answers are written by a local LLM using only the content on this site, and every answer lists its sources.</p>
 </header>
 
-<div class="lab-layout">
-  <section class="panel" aria-labelledby="ask-heading">
-    <h2 id="ask-heading" class="panel-label mono">Ask a question</h2>
+<section class="panel console lab-console" aria-label="Ask the AI Lab">
+  <div class="console-bar">
+    <span>ai-lab · rag over my profile</span>
+    <span class="status-line">
+      <span class="status-item">ollama <span class="status" data-service="ollama" data-state="checking">checking</span></span>
+      <span class="status-item">qdrant <span class="status" data-service="qdrant" data-state="checking">checking</span></span>
+    </span>
+  </div>
+  <div class="console-body">
     <form id="ask-form" class="ask-form">
-      <label for="question">Your question</label>
+      <label for="question" class="ask-label">ask&gt;</label>
       <div class="ask-row">
-        <input id="question" name="question" type="search" required maxlength="500"
-               placeholder="For example: Which vector databases has Blessing used?">
-        <button class="button button-primary" type="submit">Ask</button>
+        <input id="question" name="question" type="text" required maxlength="500" autocomplete="off"
+               placeholder="Which vector databases has Blessing used?">
+        <button class="btn btn-primary" type="submit">Run</button>
       </div>
     </form>
     <div class="examples">
-      <p class="examples-label mono">Try one:</p>
+      <p class="mono-label">try:</p>
       <ul class="example-list">
         {% for example in examples %}
-        <li><button type="button" class="chip example" data-question="{{ example }}">{{ example }}</button></li>
+        <li><button type="button" class="filter example" data-question="{{ example }}">{{ example }}</button></li>
         {% endfor %}
       </ul>
     </div>
     <div id="result" class="result" aria-live="polite" aria-busy="false">
-      <p id="answer" class="answer"></p>
+      <p id="answer" class="answer-text"></p>
       <div id="sources-block" class="sources" hidden>
-        <h3>Sources</h3>
+        <h2 class="mono-label">sources</h2>
         <ol id="sources" class="source-list"></ol>
       </div>
-      <p id="timing" class="meta"></p>
+      <p id="timing" class="muted-note"></p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="panel" aria-labelledby="status-heading">
-    <h2 id="status-heading" class="panel-label mono">System status</h2>
-    <dl class="status-list">
-      <div class="status-row">
-        <dt>Ollama (local LLM)</dt>
-        <dd><span class="status" data-service="ollama" data-state="checking">Checking</span></dd>
-      </div>
-      <div class="status-row">
-        <dt>Qdrant (vector search)</dt>
-        <dd><span class="status" data-service="qdrant" data-state="checking">Checking</span></dd>
-      </div>
-    </dl>
-  </section>
-</div>
-<div class="lab-docs dag">
-  {% for heading, html in lab.html_by_heading.items() %}
-  <section class="dag-step lab-doc" aria-labelledby="lab-doc-{{ loop.index }}">
-    <h2 id="lab-doc-{{ loop.index }}" class="dag-title">{{ heading }}</h2>
-    <div class="panel prose">{{ html | safe }}</div>
-  </section>
-  {% endfor %}
-  <p><a class="text-link" href="https://{{ profile.github }}/portfolio" rel="noopener">Source code on GitHub</a></p>
-</div>
+{% include "_lab_docs.html" %}
 {% endblock %}
 {% block scripts %}<script src="{{ url('static/lab.js') }}" defer></script>{% endblock %}

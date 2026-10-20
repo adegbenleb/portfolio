@@ -52,7 +52,7 @@ def test_chunk_ids_are_unique_and_stable():
 def test_payload_has_required_fields():
     for chunk in build_chunks():
         assert {"text", "file", "section", "label", "dates"} <= set(chunk.payload)
-        assert chunk.section in {"profile", "about", "experience", "skills", "project"}
+        assert chunk.section in {"profile", "about", "experience", "skills", "stack", "project"}
 
 
 def test_no_chunk_contains_a_phone_number():

@@ -1,88 +1,84 @@
 {% extends "base.html" %}
-{% block title %}{{ profile.name }} | {{ profile.headline }}{% endblock %}
+{% block title %}{{ profile.name }}, {{ profile.headline }}{% endblock %}
 {% block content %}
-{% if profile.pipeline %}
-<figure class="pipeline" aria-labelledby="pipeline-caption">
-  <ol class="pipeline-stages">
-    {% for stage in profile.pipeline %}
-    <li class="stage{% if loop.last %} stage-last{% endif %}">
-      <span class="stage-index mono">{{ "%02d" | format(loop.index) }}</span>
-      <span class="stage-name">{{ stage.stage }}</span>
-      <span class="stage-items mono">{{ stage['items'] | join(" · ") }}</span>
+<section class="hero">
+  <div class="hero-text">
+    <p class="kicker">// {{ profile.headline.split(",")[0] | lower }} · {{ profile.location | lower }}{% if profile.relocation %} · open to relocation{% endif %}</p>
+    <h1 class="hero-name">{% for part in profile.name.split(" ") %}{{ part }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+    {% if profile.tagline %}<p class="hero-tagline">{{ profile.tagline }}</p>{% endif %}
+    <div class="actions">
+      <a class="btn btn-primary" href="{{ url('experience') }}">View experience</a>
+      <a class="btn btn-ghost" href="{{ url('lab') }}">Ask the AI Lab</a>
+      <a class="btn btn-ghost" href="{{ url(cv_path) }}" download>Download CV</a>
+    </div>
+  </div>
+
+  {% if current_role %}
+  <div class="panel console sql-panel">
+    <div class="console-bar"><span>query.sql</span><span>postgres · read-only</span></div>
+    <div class="sql-body">
+      <div><span class="kw">SELECT</span> role, company, since</div>
+      <div><span class="kw">FROM</span> blessing.experience</div>
+      <div><span class="kw">WHERE</span> status = <span class="str">'current'</span>;</div>
+    </div>
+    <div class="sql-result">
+      <div class="sql-row sql-head"><span>role</span><span>company</span><span>since</span></div>
+      <div class="sql-row"><span>{{ current_role.title }}</span><span>{{ current_role.company }}</span><span>{{ current_role.start }}</span></div>
+      <p class="sql-meta">1 row</p>
+    </div>
+  </div>
+  {% endif %}
+</section>
+
+<section class="metrics" aria-label="Key numbers">
+  {% for metric in metrics %}
+  <div class="panel card metric">
+    <p class="mono-label">{{ metric.label }}</p>
+    <p class="metric-value{% if loop.last %} accent{% endif %}">{{ metric.value }}</p>
+  </div>
+  {% endfor %}
+</section>
+
+<section class="section" id="stack" aria-labelledby="stack-heading">
+  <p class="section-label">{{ stack.label }}</p>
+  <h2 id="stack-heading" class="section-title">{{ stack.title }}</h2>
+  <ol class="dag">
+    {% for step in stack.steps %}
+    <li class="panel dag-step{% if loop.last %} dag-step-last{% endif %}">
+      <p class="step-label">{{ "%02d" | format(loop.index) }} · {{ step.stage }}</p>
+      <p class="step-name">{{ step.name }}</p>
+      <p class="step-items">{{ step['items'] | join(", ") }}</p>
     </li>
     {% endfor %}
   </ol>
-  <figcaption id="pipeline-caption" class="pipeline-caption mono">From sources, through pipelines and stores, to AI answers.</figcaption>
-</figure>
+</section>
+
+<section class="section" id="projects" aria-labelledby="projects-heading">
+  <div class="section-head">
+    <div>
+      <p class="section-label">select * from projects</p>
+      <h2 id="projects-heading" class="section-title">Projects</h2>
+    </div>
+    {% include "_filters.html" %}
+  </div>
+  {% include "_project_cards.html" %}
+</section>
+
+{% if teaser %}
+<section class="section" id="lab" aria-label="AI Lab">
+  <div class="panel console">
+    <div class="console-bar"><span>ai-lab · rag over my profile</span><span>recorded example{% if recorded_on %} · {{ recorded_on | lower }}{% endif %}</span></div>
+    <div class="console-body">
+      <p class="ask-label">ask&gt;</p>
+      <p class="ask-question">{{ teaser.question }}</p>
+      <p class="answer-text">{{ teaser.answer }}</p>
+      <ul class="source-chips" aria-label="Sources">
+        {% for source in teaser.sources[:4] %}<li>[{{ source.n }}] {{ source.label | lower }} · {{ source.section }}</li>{% endfor %}
+      </ul>
+      <p><a class="mono-link" href="{{ url('lab') }}">open ~/ai-lab →</a></p>
+    </div>
+  </div>
+</section>
 {% endif %}
-
-<div class="home-top">
-  <section class="hero">
-    <div class="hero-identity">
-      {% if profile.photo %}
-      <img class="profile-photo" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="160" height="160">
-      {% endif %}
-      <div>
-        <p class="eyebrow mono">{{ profile.location }}</p>
-        <h1>{{ profile.name }}</h1>
-      </div>
-    </div>
-    <p class="headline">{{ profile.headline }}</p>
-    <p class="intro">{{ profile.intro }}</p>
-    {% if profile.relocation or profile.available %}
-    <p class="availability">
-      {% if profile.relocation %}<span>{{ profile.relocation }}</span>{% endif %}
-      {% if profile.available %}<span>Available from {{ profile.available }}</span>{% endif %}
-    </p>
-    {% endif %}
-    <div class="actions">
-      <a class="button button-primary" href="{{ url('experience') }}">View experience</a>
-      <a class="button" href="{{ url('projects') }}">Projects</a>
-      <a class="button" href="{{ url('contact') }}">Contact</a>
-    </div>
-  </section>
-
-  <aside class="panel key-facts" aria-labelledby="facts-heading">
-    <h2 id="facts-heading" class="panel-label mono">Key facts</h2>
-    <dl>
-      {% for fact in key_facts %}
-      <div class="key-fact">
-        <dt class="mono">{{ fact.label }}</dt>
-        <dd>{{ fact.value }}</dd>
-      </div>
-      {% endfor %}
-    </dl>
-  </aside>
-</div>
-
-<div class="dag">
-  <section class="dag-step" aria-labelledby="metrics-heading">
-    <h2 id="metrics-heading" class="dag-title">Pipeline metrics</h2>
-    <ul class="metrics">
-      {% for fact in achievements %}
-      <li class="metric">
-        <span class="metric-label mono">{{ fact.label }}</span>
-        <span class="metric-value">{{ fact.value }}</span>
-        <span class="metric-status mono"><span class="live-dot" aria-hidden="true"></span>live</span>
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
-
-  <section class="dag-step" aria-labelledby="explore-heading">
-    <h2 id="explore-heading" class="dag-title">Explore</h2>
-    <ul class="explore-grid">
-      {% for path, label, description in explore %}
-      <li>
-        <a class="panel explore-card" href="{{ url(path) }}">
-          <span class="explore-index mono">{{ "%02d" | format(loop.index) }}</span>
-          <span class="explore-title">{{ label }}</span>
-          <span class="explore-text">{{ description }}</span>
-          <span class="explore-arrow" aria-hidden="true">→</span>
-        </a>
-      </li>
-      {% endfor %}
-    </ul>
-  </section>
-</div>
 {% endblock %}
+{% block scripts %}<script src="{{ url('static/projects.js') }}" defer></script>{% endblock %}

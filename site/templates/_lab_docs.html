@@ -1,0 +1,11 @@
+{# How it works, roadmap and API reference from content/lab.md, shared by both lab pages. #}
+<div class="lab-docs">
+  {% for heading, html in lab.html_by_heading.items() %}
+  <section class="section" aria-labelledby="lab-doc-{{ loop.index }}">
+    <p class="section-label">cat lab/{{ heading | lower | replace(" ", "_") }}.md</p>
+    <h2 id="lab-doc-{{ loop.index }}" class="section-title">{{ heading }}</h2>
+    <div class="panel prose">{{ html | safe }}</div>
+  </section>
+  {% endfor %}
+  <p><a class="mono-link" href="https://{{ profile.github }}/portfolio" rel="noopener">source code on github →</a></p>
+</div>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Blessing Adegbenle, Data Engineer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050607}
+a{color:#22D3EE;text-decoration:none}a:hover{color:#A5F3FC}
+.navlink:hover{color:#E6EDF3}
+.card:hover{border-color:#2A3A4A}
+.btn-primary:hover{background:#A5F3FC}
+.btn-ghost:hover{border-color:#22D3EE;color:#E6EDF3}
+</style>
+</helmet>
+<div style="min-height: 100vh; background-color: #050607; background-image: linear-gradient(#0D1117 1px, transparent 1px), linear-gradient(90deg, #0D1117 1px, transparent 1px); background-size: 48px 48px; color: #E6EDF3; font-family: 'Archivo', 'Helvetica Neue', Arial, sans-serif;">
+
+<header style="position: sticky; top: 0; z-index: 5; background: rgba(5,6,7,0.88); border-bottom: 1px solid #161B22;">
+<div style="max-width: 1240px; margin: 0 auto; padding: 14px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;">
+<a href="#top" style="display: flex; align-items: center; gap: 12px; color: #E6EDF3;">
+<span style="width: 38px; height: 38px; border: 1px solid {{accent}}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; color: {{accent}};">B.A</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9AA6B2;">blessing.adegbenle</span>
+</a>
+<nav aria-label="Main" style="display: flex; flex-wrap: wrap; gap: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+<a class="navlink" href="#top" style="padding: 10px 12px; color: #E6EDF3; border-bottom: 1px solid {{accent}};">~/home</a>
+<a class="navlink" href="Experience.dc.html" style="padding: 10px 12px; color: #9AA6B2;">~/experience</a>
+<a class="navlink" href="#projects" style="padding: 10px 12px; color: #9AA6B2;">~/projects</a>
+<a class="navlink" href="#stack" style="padding: 10px 12px; color: #9AA6B2;">~/stack</a>
+<a class="navlink" href="#lab" style="padding: 10px 12px; color: #9AA6B2;">~/ai-lab</a>
+<a class="navlink" href="#contact" style="padding: 10px 12px; color: #9AA6B2;">~/contact</a>
+</nav>
+<span style="display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2; border: 1px solid #1E2630; padding: 8px 12px;">
+<span style="width: 7px; height: 7px; border-radius: 50%; background: #34D399;"></span>open to work · from 12/2026
+</span>
+</div>
+</header>
+
+<main id="top" style="max-width: 1240px; margin: 0 auto; padding: 0 32px;">
+
+<section style="display: flex; flex-wrap: wrap; gap: 48px; align-items: center; padding: 96px 0 72px;">
+<div style="flex: 1 1 520px; min-width: 0;">
+<p style="margin: 0 0 20px; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: {{accent}};">// data engineer · bielefeld, germany · open to relocation</p>
+<h1 style="margin: 0; font-size: 84px; line-height: 0.95; font-weight: 800; letter-spacing: -2px; text-transform: uppercase;">Blessing<br>Adegbenle</h1>
+<p style="margin: 28px 0 0; font-size: 24px; line-height: 1.4; color: #C9D1D9; max-width: 600px;">I build the data layer behind AI and analytics: pipelines, vector search and graph data that keep AI systems working with accurate, current information.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px;">
+<a class="btn-primary" href="Experience.dc.html" style="background: {{accent}}; color: #050607; padding: 14px 22px; font-weight: 700; font-size: 15px;">View experience</a>
+<a class="btn-ghost" href="#lab" style="border: 1px solid #30363D; color: #C9D1D9; padding: 14px 22px; font-weight: 500; font-size: 15px;">Ask the AI Lab</a>
+<a class="btn-ghost" href="#contact" style="border: 1px solid #30363D; color: #C9D1D9; padding: 14px 22px; font-weight: 500; font-size: 15px;">Download CV</a>
+</div>
+</div>
+
+<div style="flex: 1 1 440px; min-width: 0; background: #0B0F14; border: 1px solid #1E2630; font-family: 'IBM Plex Mono', monospace; font-size: 14px;">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #1E2630; color: #9AA6B2; font-size: 12px;">
+<span>query.sql</span><span>postgres · read-only</span>
+</div>
+<div style="padding: 20px 18px; line-height: 1.75;">
+<div><span style="color: #F59E0B;">SELECT</span> role, company, since</div>
+<div><span style="color: #F59E0B;">FROM</span> blessing.experience</div>
+<div><span style="color: #F59E0B;">WHERE</span> status = <span style="color: #34D399;">'current'</span>;</div>
+</div>
+<div style="border-top: 1px solid #1E2630; padding: 14px 18px;">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; color: #9AA6B2; font-size: 12px; padding-bottom: 8px; border-bottom: 1px dashed #1E2630;">
+<span>role</span><span>company</span><span>since</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding-top: 8px; color: #E6EDF3;">
+<span>Data Engineer</span><span>Phaina</span><span>2026-05</span>
+</div>
+<p style="margin: 14px 0 0; color: #9AA6B2; font-size: 12px;">1 row · 4 ms</p>
+</div>
+</div>
+</section>
+
+<section aria-label="Key numbers" style="display: flex; flex-wrap: wrap; gap: 16px; padding-bottom: 88px;">
+<div class="card" style="flex: 1 1 220px; background: #0B0F14; border: 1px solid #1E2630; padding: 22px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">products_ingested</p>
+<p style="margin: 10px 0 0; font-size: 44px; font-weight: 800; color: #E6EDF3;">500,000+</p>
+</div>
+<div class="card" style="flex: 1 1 220px; background: #0B0F14; border: 1px solid #1E2630; padding: 22px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">attribute_values</p>
+<p style="margin: 10px 0 0; font-size: 44px; font-weight: 800; color: #E6EDF3;">5.9M</p>
+</div>
+<div class="card" style="flex: 1 1 220px; background: #0B0F14; border: 1px solid #1E2630; padding: 22px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">company_catalogues</p>
+<p style="margin: 10px 0 0; font-size: 44px; font-weight: 800; color: #E6EDF3;">15</p>
+</div>
+<div class="card" style="flex: 1 1 220px; background: #0B0F14; border: 1px solid #1E2630; padding: 22px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">years_experience</p>
+<p style="margin: 10px 0 0; font-size: 44px; font-weight: 800; color: {{accent}};">4+</p>
+</div>
+</section>
+
+<section id="stack" style="padding-bottom: 96px;">
+<p style="margin: 0 0 10px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}};">dag: how_i_work</p>
+<h2 style="margin: 0 0 32px; font-size: 40px; font-weight: 800; letter-spacing: -0.5px;">From messy sources to answers you can trust</h2>
+<div style="display: flex; flex-wrap: wrap; align-items: stretch; gap: 0;">
+<div style="flex: 1 1 180px; min-width: 0; border: 1px solid #1E2630; background: #0B0F14; padding: 18px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F59E0B;">01 · sources</p>
+<p style="margin: 8px 0 0; font-weight: 700; font-size: 18px;">Extract</p>
+<p style="margin: 8px 0 0; color: #9AA6B2; font-size: 14px; line-height: 1.5;">BMEcat XML, PIM exports, CSV, XLSX, SAP OData, GA4</p>
+</div>
+<div aria-hidden="true" style="flex: 0 0 28px; align-self: center; height: 1px; background: {{accent}};"></div>
+<div style="flex: 1 1 180px; min-width: 0; border: 1px solid #1E2630; background: #0B0F14; padding: 18px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F59E0B;">02 · ingest</p>
+<p style="margin: 8px 0 0; font-weight: 700; font-size: 18px;">Load</p>
+<p style="margin: 8px 0 0; color: #9AA6B2; font-size: 14px; line-height: 1.5;">Python, Airflow, Azure Data Factory, Pydantic contracts</p>
+</div>
+<div aria-hidden="true" style="flex: 0 0 28px; align-self: center; height: 1px; background: {{accent}};"></div>
+<div style="flex: 1 1 180px; min-width: 0; border: 1px solid #1E2630; background: #0B0F14; padding: 18px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F59E0B;">03 · model</p>
+<p style="margin: 8px 0 0; font-weight: 700; font-size: 18px;">Transform</p>
+<p style="margin: 8px 0 0; color: #9AA6B2; font-size: 14px; line-height: 1.5;">dbt, PySpark, Databricks, Snowflake, Great Expectations</p>
+</div>
+<div aria-hidden="true" style="flex: 0 0 28px; align-self: center; height: 1px; background: {{accent}};"></div>
+<div style="flex: 1 1 180px; min-width: 0; border: 1px solid #1E2630; background: #0B0F14; padding: 18px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F59E0B;">04 · serve</p>
+<p style="margin: 8px 0 0; font-weight: 700; font-size: 18px;">Store</p>
+<p style="margin: 8px 0 0; color: #9AA6B2; font-size: 14px; line-height: 1.5;">PostgreSQL, Qdrant vectors, Neo4j graph, GraphQL</p>
+</div>
+<div aria-hidden="true" style="flex: 0 0 28px; align-self: center; height: 1px; background: {{accent}};"></div>
+<div style="flex: 1 1 180px; min-width: 0; border: 1px solid {{accent}}; background: #0B0F14; padding: 18px;">
+<p style="margin: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #F59E0B;">05 · answer</p>
+<p style="margin: 8px 0 0; font-weight: 700; font-size: 18px;">AI &amp; analytics</p>
+<p style="margin: 8px 0 0; color: #9AA6B2; font-size: 14px; line-height: 1.5;">RAG, Agno agents, LangSmith evals, Power BI, Tableau</p>
+</div>
+</div>
+</section>
+
+<section id="projects" style="padding-bottom: 96px;">
+<div style="display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 28px;">
+<div>
+<p style="margin: 0 0 10px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}};">select * from projects</p>
+<h2 style="margin: 0; font-size: 40px; font-weight: 800; letter-spacing: -0.5px;">Projects</h2>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 13px;">
+<button type="button" style="background: {{accent}}; color: #050607; border: 0; padding: 10px 14px; font: inherit; cursor: pointer;">all</button>
+<button type="button" style="background: transparent; color: #9AA6B2; border: 1px solid #30363D; padding: 10px 14px; font: inherit; cursor: pointer;">personal</button>
+<button type="button" style="background: transparent; color: #9AA6B2; border: 1px solid #30363D; padding: 10px 14px; font: inherit; cursor: pointer;">competition</button>
+</div>
+</div>
+<div style="display: flex; flex-wrap: wrap; gap: 16px;">
+<article class="card" style="flex: 1 1 340px; background: #0B0F14; border: 1px solid #1E2630; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span style="color: #9AA6B2;">personal · 2026</span><span style="color: #34D399;">running</span></div>
+<h3 style="margin: 0; font-size: 22px; font-weight: 700;">ShopFlow</h3>
+<p style="margin: 0; color: #C9D1D9; font-size: 15px; line-height: 1.55;">E-commerce analytics platform: almost 100,000 public orders from raw CSV to a tested star schema with Airflow and dbt, plus an AI assistant on a local LLM.</p>
+<p style="margin: auto 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">airflow · dbt · postgres · neo4j · langgraph</p>
+</article>
+<article class="card" style="flex: 1 1 340px; background: #0B0F14; border: 1px solid #1E2630; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span style="color: #9AA6B2;">competition · 2026</span><span style="color: #F59E0B;">in development</span></div>
+<h3 style="margin: 0; font-size: 22px; font-weight: 700;">AdhereAI</h3>
+<p style="margin: 0; color: #C9D1D9; font-size: 15px; line-height: 1.55;">Health app for people with non-communicable diseases. I built the data collection layer: pipelines, data model, validation and privacy by design under the GDPR.</p>
+<p style="margin: auto 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">python · postgres · pydantic · fastapi</p>
+</article>
+<article class="card" style="flex: 1 1 340px; background: #0B0F14; border: 1px solid #1E2630; padding: 24px; display: flex; flex-direction: column; gap: 12px;">
+<div style="display: flex; justify-content: space-between; gap: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;"><span style="color: #9AA6B2;">personal · 2026</span><span style="color: #34D399;">live</span></div>
+<h3 style="margin: 0; font-size: 22px; font-weight: 700;">This portfolio</h3>
+<p style="margin: 0; color: #C9D1D9; font-size: 15px; line-height: 1.55;">Content stored as files, embedded into Qdrant and answered by a local LLM with sources, guardrails and an evaluation set.</p>
+<p style="margin: auto 0 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">fastapi · qdrant · ollama · rag</p>
+</article>
+</div>
+</section>
+
+<section id="lab" style="padding-bottom: 96px;">
+<div style="background: #0B0F14; border: 1px solid #1E2630;">
+<div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding: 14px 20px; border-bottom: 1px solid #1E2630; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #9AA6B2;">
+<span>ai-lab · rag over my profile</span><span>example question</span>
+</div>
+<div style="padding: 28px 24px; display: flex; flex-direction: column; gap: 18px;">
+<label for="ask" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: {{accent}};">ask&gt;</label>
+<input id="ask" type="text" value="What did Blessing do at Miele?" style="background: #050607; border: 1px solid #30363D; color: #E6EDF3; padding: 14px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 15px;">
+<p style="margin: 0; font-size: 17px; line-height: 1.6; color: #C9D1D9; max-width: 860px;">At Miele, Blessing extracted SAP FI/CO data with Azure Data Factory into a Databricks Lakehouse, cleaned it with PySpark through bronze and silver layers, and built the gold layer as dbt models with tests. [1] [2]</p>
+<div style="display: flex; flex-wrap: wrap; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px;">
+<span style="border: 1px solid #30363D; padding: 6px 10px; color: #9AA6B2;">[1] miele · sap extraction</span>
+<span style="border: 1px solid #30363D; padding: 6px 10px; color: #9AA6B2;">[2] miele · dbt gold layer</span>
+</div>
+</div>
+</div>
+</section>
+
+<footer id="contact" style="border-top: 1px solid #161B22; padding: 40px 0 56px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9AA6B2;">
+<div style="display: flex; flex-wrap: wrap; gap: 20px;">
+<a href="mailto:adegbenleb@gmail.com">adegbenleb@gmail.com</a>
+<a href="https://linkedin.com/in/blessing-ayodeji">linkedin</a>
+<a href="https://github.com/adegbenleb">github</a>
+</div>
+<span>built with fastapi · qdrant · ollama</span>
+</footer>
+
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#22D3EE","options":["#22D3EE","#34D399","#F59E0B","#60A5FA"]},"$preview":{"width":1440,"height":3000}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { accent: this.props.accent ?? '#22D3EE' };
+  }
+}
+</script>
+</body>
+</html>

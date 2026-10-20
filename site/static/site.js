@@ -1,54 +1,15 @@
-// Shared behaviour on every page: theme toggle, scroll progress, mobile menu and the
-// Cmd+K / Ctrl+K command palette. Works the same on the live site and the static build.
+// Shared behaviour on every page: the mobile menu and the Ctrl+K / Cmd+K command palette.
+// Works the same on the live site and the static build.
 
-const root = document.documentElement;
-
-// Theme toggle. The saved theme is applied by a small script in <head> before paint.
-const themeToggle = document.querySelector("[data-theme-toggle]");
-
-function syncThemeToggle() {
-  const light = root.dataset.theme === "light";
-  themeToggle.setAttribute("aria-pressed", String(light));
-  themeToggle.setAttribute("aria-label", light ? "Switch to dark theme" : "Switch to light theme");
-}
-
-themeToggle.addEventListener("click", () => {
-  root.dataset.theme = root.dataset.theme === "light" ? "dark" : "light";
-  try {
-    localStorage.setItem("theme", root.dataset.theme);
-  } catch {
-    // Private mode: the choice simply is not remembered.
-  }
-  syncThemeToggle();
-});
-syncThemeToggle();
-
-// Scroll progress bar.
-const progress = document.querySelector(".scroll-progress span");
-
-function updateProgress() {
-  const max = root.scrollHeight - root.clientHeight;
-  progress.style.transform = `scaleX(${max > 0 ? Math.min(window.scrollY / max, 1) : 0})`;
-}
-
-window.addEventListener("scroll", updateProgress, { passive: true });
-window.addEventListener("resize", updateProgress);
-updateProgress();
-
-// Mobile slide-in menu.
+// Mobile menu: the nav folds into a dropdown under the header on small screens.
 const menuButton = document.querySelector("[data-menu-toggle]");
-const backdrop = document.querySelector("[data-menu-backdrop]");
 
 function setMenu(open) {
   document.body.classList.toggle("menu-open", open);
   menuButton.setAttribute("aria-expanded", String(open));
-  menuButton.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-  backdrop.hidden = !open;
-  if (open) document.querySelector("#site-nav a")?.focus();
 }
 
 menuButton.addEventListener("click", () => setMenu(!document.body.classList.contains("menu-open")));
-backdrop.addEventListener("click", () => setMenu(false));
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && document.body.classList.contains("menu-open")) {
     setMenu(false);
@@ -165,11 +126,6 @@ paletteInput.addEventListener("keydown", (event) => {
 palette.addEventListener("click", (event) => {
   if (event.target === palette) palette.close();
 });
-
-// Show the right shortcut on non-Mac keyboards.
-if (!/Mac|iPhone|iPad/.test(navigator.platform)) {
-  document.querySelectorAll(".search-kbd").forEach((kbd) => (kbd.textContent = "Ctrl K"));
-}
 
 // Links like /experience#role-miele open that role's card.
 function openFromHash() {

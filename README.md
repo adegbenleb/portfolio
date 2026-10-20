@@ -9,7 +9,7 @@ The site is published as static pages on GitHub Pages. The AI Lab itself runs on
 (Ollama) with Qdrant for vector search, so it is live during demos on my machine; the published
 AI Lab page shows a demo video and answers recorded from the real pipeline.
 
-![Home page](docs/screenshot.png)
+![Home page](docs/screenshot.jpg)
 
 ## What it does
 
@@ -26,14 +26,14 @@ AI Lab page shows a demo video and answers recorded from the real pipeline.
 
 ## Design
 
-"The site looks like the systems I build": dark by default (with a light theme that is
-remembered), a pipeline diagram on the home page with data flowing from sources to AI
-answers, headline numbers styled as monitoring metrics, and section headings linked by a
-line like tasks in a DAG. Navigation has a sticky header with a scroll progress bar, a
-Cmd+K / Ctrl+K command palette for pages, roles, projects and skills, and a slide-in menu
-on mobile. Animations switch off when the visitor prefers reduced motion, and text meets
-WCAG AA contrast in both themes. Screenshots of every key page in both themes, desktop
-and mobile, are in [`docs/screenshots/`](docs/screenshots/).
+A dark data console, built from the approved mockups in [`docs/design/`](docs/design/): a
+48px grid background, square panels, Archivo for text and IBM Plex Mono for labels, cyan for
+actions, amber for labels and steps, green for "running" and "open to work". The home page
+shows the current role as the result of a SQL query, the headline numbers as metric cards,
+"how I work" as a five-step pipeline, and a real recorded AI Lab answer. Experience is a
+timeline with the current role marked "status: running". Everything on screen comes from
+`content/`, including the pipeline steps (`content/stack.md`). Screenshots of every page on
+desktop and mobile are in [`docs/screenshots/`](docs/screenshots/).
 
 ## Two ways to run the same site
 
@@ -172,7 +172,7 @@ OLLAMA_MODEL=qwen2.5:7b uv run python -m evals.run_evals   # compare another mod
 
 | Path | What it holds |
 |---|---|
-| `content/` | Profile, about, skills, experience, projects and AI Lab docs in Markdown, plus the public CV PDF |
+| `content/` | Profile, about, skills, stack, experience, projects and AI Lab docs in Markdown, plus the public CV PDF |
 | `api/` | FastAPI app, page definitions and the content reader |
 | `build.py` | Static build for GitHub Pages |
 | `scripts/` | Demo video recorder and CV PDF generator (Playwright) |

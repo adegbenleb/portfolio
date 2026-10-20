@@ -8,17 +8,14 @@ github: github.com/adegbenleb
 languages: [English (fluent), German (B2)]
 relocation: Open to relocation within Germany
 photo: profile.jpg
-pipeline:
-  - {stage: Sources, items: [BMEcat, PIM, CSV, SAP]}
-  - {stage: Pipelines, items: [Python, dbt, Airflow]}
-  - {stage: Stores, items: [PostgreSQL, Qdrant, Neo4j]}
-  - {stage: AI answers, items: [RAG, AI agents]}
+tagline: "I build the data layer behind AI and analytics: pipelines, vector search and graph data that keep AI systems working with accurate, current information."
+experience_intro: "Three roles, one thread: turning messy enterprise data into models that analytics and AI can trust."
 available_from: 2026-12
 highlights:
-  - {value: "4+", label: years experience}
-  - {value: "500,000+", label: products}
-  - {value: "15", label: company catalogues}
+  - {value: "500,000+", label: products ingested}
   - {value: "5.9M", label: attribute values}
+  - {value: "15", label: company catalogues}
+  - {value: "4+", label: years experience}
 ---
 
 Data Engineer with 4+ years of experience building the data foundations that AI and analytics depend on. Specializes in the data layer behind AI applications, bringing more than 500,000 products and 5.9 million attribute values from 15 manufacturers, distributors and retailers into one canonical model across PostgreSQL, Qdrant and Neo4j, with RAG pipelines and AI agents built with Agno on top. Experienced in turning messy enterprise data into trusted models, from SAP finance data in a Databricks Lakehouse to marketing and business data in Snowflake, using Azure Data Factory, Airflow and dbt. Builds data quality, lineage and access control into every pipeline, and works in an AI-native way with Claude Code every day, turning requirements from AI engineers and business teams into reliable, documented data products.

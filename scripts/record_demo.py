@@ -47,7 +47,7 @@ def ask_by_typing(page: Page, question: str) -> None:
     page.locator("#question").fill("")
     page.locator("#question").press_sequentially(question, delay=45)
     page.wait_for_timeout(400)
-    page.get_by_role("button", name="Ask", exact=True).click()
+    page.get_by_role("button", name="Run", exact=True).click()
     wait_for_answer(page)
 
 

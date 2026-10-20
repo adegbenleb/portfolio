@@ -1,27 +1,39 @@
 {% extends "base.html" %}
-{% block title %}About | {{ profile.name }}{% endblock %}
+{% block title %}About, {{ profile.name }}{% endblock %}
 {% block content %}
-<header class="page-header about-header">
-  {% if profile.photo %}
-  <img class="profile-photo profile-photo-large" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="200" height="200">
-  {% endif %}
-  <div>
-    <h1>{{ about.title }}</h1>
-    <p class="lead">{{ profile.headline }}, based in {{ profile.location }}.</p>
-  </div>
+<header class="page-header">
+  <p class="section-label">cat about.md</p>
+  <h1 class="page-title">{{ about.title }}</h1>
+  <p class="page-lead">{{ profile.headline }}, based in {{ profile.location }}.</p>
 </header>
 
-<div class="about dag">
-  {% for heading, html in about.html_by_heading.items() %}
-  <section class="about-section dag-step" aria-labelledby="about-{{ loop.index }}">
-    <h2 id="about-{{ loop.index }}" class="dag-title">{{ heading }}</h2>
-    <div class="prose">{{ html | safe }}</div>
-  </section>
-  {% endfor %}
-</div>
+<div class="about-layout">
+  <div class="about-text">
+    {% for heading, html in about.html_by_heading.items() %}
+    <section class="panel about-section" aria-labelledby="about-{{ loop.index }}">
+      <p class="step-label">{{ "%02d" | format(loop.index) }}</p>
+      <h2 id="about-{{ loop.index }}" class="card-title">{{ heading }}</h2>
+      <div class="prose">{{ html | safe }}</div>
+    </section>
+    {% endfor %}
+  </div>
 
-<p class="actions">
-  <a class="button button-primary" href="{{ url('experience') }}">See my experience</a>
-  <a class="button" href="{{ url('media') }}">Download my CV</a>
-</p>
+  <aside class="about-side">
+    {% if profile.photo %}
+    <img class="profile-photo" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="320" height="320">
+    {% endif %}
+    <div class="panel console">
+      <div class="console-bar"><span>profile.yaml</span><span>key facts</span></div>
+      <dl class="facts">
+        {% for fact in key_facts %}
+        <div class="fact"><dt>{{ fact.label | lower }}:</dt><dd>{{ fact.value }}</dd></div>
+        {% endfor %}
+      </dl>
+    </div>
+    <p class="actions">
+      <a class="btn btn-primary" href="{{ url('experience') }}">View experience</a>
+      <a class="btn btn-ghost" href="{{ url('media') }}">Download CV</a>
+    </p>
+  </aside>
+</div>
 {% endblock %}

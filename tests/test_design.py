@@ -1,4 +1,4 @@
-"""Redesign: theme toggle, command palette, timeline and motion settings."""
+"""Dark data-console design: header, home, experience timeline, palette and safety checks."""
 
 import json
 import re
@@ -12,6 +12,16 @@ from build import build
 
 client = TestClient(main.app)
 PAGES = ["/", "/about", "/experience", "/projects", "/skills", "/lab", "/media", "/contact"]
+NAV_LABELS = [
+    "~/home",
+    "~/about",
+    "~/experience",
+    "~/projects",
+    "~/skills",
+    "~/ai-lab",
+    "~/media",
+    "~/contact",
+]
 PHONE_PATTERN = re.compile(r"\+\d[\d\s-]{6,}\d|\btel:")
 STYLE = Path(__file__).resolve().parent.parent / "site" / "static" / "style.css"
 
@@ -25,29 +35,79 @@ def search_index(html: str) -> list[dict]:
 
 
 @pytest.mark.parametrize("path", PAGES)
-def test_every_page_has_the_theme_toggle_and_dark_default(path):
+def test_header_has_brand_file_nav_and_open_to_work_badge(path):
     html = client.get(path).text
-    assert '<html lang="en" data-theme="dark">' in html
-    assert "data-theme-toggle" in html
-    assert 'aria-label="Switch to light theme"' in html
-    # The saved choice is applied before paint.
-    assert 'localStorage.getItem("theme")' in html
+    assert '<span class="brand-box" aria-hidden="true">B.A</span>' in html
+    assert "blessing.adegbenle" in html
+    for label in NAV_LABELS:
+        assert f">{label}</a>" in html
+    assert "open to work · from 12/2026" in html
+    assert 'data-menu-toggle aria-expanded="false" aria-controls="site-nav"' in html
+
+
+@pytest.mark.parametrize(
+    ("path", "label"), [("/", "~/home"), ("/experience", "~/experience"), ("/lab", "~/ai-lab")]
+)
+def test_current_page_is_marked_in_the_nav(path, label):
+    html = client.get(path).text
+    assert re.search(rf'aria-current="page">{re.escape(label)}</a>', html)
 
 
 @pytest.mark.parametrize("path", PAGES)
-def test_every_page_has_palette_menu_and_progress_bar(path):
+def test_dark_only_without_theme_toggle(path):
     html = client.get(path).text
-    assert 'id="command-palette"' in html
-    assert "data-open-palette" in html
-    assert 'data-menu-toggle aria-expanded="false" aria-controls="site-nav"' in html
-    assert 'class="scroll-progress"' in html
-    assert "Built with FastAPI, Qdrant and Ollama" in html
+    assert "data-theme-toggle" not in html
+    assert 'localStorage.getItem("theme")' not in html
+    assert '<meta name="color-scheme" content="dark">' in html
+
+
+def test_no_light_theme_in_the_stylesheet():
+    css = STYLE.read_text()
+    assert 'data-theme="light"' not in css
+    assert "--accent: #22d3ee" in css
+
+
+def test_home_matches_the_mockup_sections():
+    html = client.get("/").text
+    # SQL panel with the current role from content/
+    assert "query.sql" in html
+    assert re.search(r"<span>Data Engineer</span><span>Phaina</span><span>2026-05</span>", html)
+    # Metric cards with snake_case labels from profile.md highlights
+    for label in (
+        "products_ingested",
+        "attribute_values",
+        "company_catalogues",
+        "years_experience",
+    ):
+        assert f'<p class="mono-label">{label}</p>' in html
+    assert '<p class="metric-value accent">4+</p>' in html
+    # Five-step DAG from content/stack.md
+    for name in ("Extract", "Load", "Transform", "Store", "AI &amp; analytics"):
+        assert f'<p class="step-name">{name}</p>' in html
+    # Projects and a real recorded AI Lab answer
+    assert "select * from projects" in html
+    assert "recorded example" in html
+
+
+def test_home_lab_teaser_is_a_real_recorded_answer():
+    recorded = json.loads(Path("evals/recorded_examples.json").read_text())
+    answers = [example["answer"] for example in recorded["examples"]]
+    html = client.get("/").text
+    teaser = re.search(r'<p class="answer-text">(.*?)</p>', html, re.S).group(1)
+    assert teaser.replace("&#39;", "'") in answers
+
+
+def test_experience_timeline_shows_running_and_success():
+    html = client.get("/experience").text
+    assert html.count("status: running") == 1
+    assert html.count("status: success") == 2
+    assert html.index("status: running") < html.index("Data Engineer · Miele")
+    assert "dag: career · 3 tasks · 4+ years" in html
 
 
 def test_search_index_covers_pages_roles_projects_and_skills():
     entries = search_index(client.get("/").text)
-    kinds = {entry["kind"] for entry in entries}
-    assert kinds == {"Page", "Role", "Project", "Skills"}
+    assert {entry["kind"] for entry in entries} == {"Page", "Role", "Project", "Skills"}
     urls = {entry["url"] for entry in entries}
     assert "/experience#role-miele" in urls
     assert "/projects#project-adhereai" in urls
@@ -60,39 +120,34 @@ def test_no_phone_number_anywhere_including_search_data(path):
     assert not PHONE_PATTERN.search(json.dumps(search_index(html)))
 
 
-def test_first_role_is_open_and_others_are_collapsed():
-    html = client.get("/experience").text
-    cards = re.findall(r'<details class="role-card"( open)?>', html)
-    assert cards == [" open", "", ""]
-    assert html.index('id="role-phaina"') < html.index('id="role-miele"')
-
-
-def test_pipeline_hero_comes_from_content():
-    html = client.get("/").text
-    for stage in ("Sources", "Pipelines", "Stores", "AI answers"):
-        assert f'<span class="stage-name">{stage}</span>' in html
-    assert "BMEcat · PIM · CSV · SAP" in html
-
-
-def test_metrics_are_plain_numbers_not_counters():
-    html = client.get("/").text
-    assert '<span class="metric-value">500,000+</span>' in html
-    assert "data-count" not in html
+def test_no_phone_number_in_any_tracked_text_file():
+    root = Path(__file__).resolve().parent.parent
+    for folder in ("content", "site", "api", "rag", "evals", "docs"):
+        for path in (root / folder).rglob("*"):
+            if path.is_file() and path.suffix in {
+                ".md",
+                ".html",
+                ".py",
+                ".js",
+                ".css",
+                ".json",
+                ".yaml",
+            }:
+                assert not PHONE_PATTERN.search(path.read_text(errors="ignore")), path
 
 
 def test_animations_are_switched_off_for_reduced_motion():
-    css = STYLE.read_text()
-    block = css.split("@media (prefers-reduced-motion: reduce)", 1)[1]
+    block = STYLE.read_text().split("@media (prefers-reduced-motion: reduce)", 1)[1]
     assert "animation: none !important" in block
     assert "transition: none !important" in block
 
 
-def test_static_build_keeps_the_shared_script_and_palette_links(tmp_path):
+def test_static_build_keeps_scripts_and_versioned_links(tmp_path):
     build(tmp_path, base="/portfolio/")
     assert (tmp_path / "static" / "site.js").is_file()
     html = (tmp_path / "index.html").read_text()
-    urls = {entry["url"] for entry in search_index(html)}
-    assert "/portfolio/experience/#role-miele" in urls
+    assert re.search(r'href="/portfolio/static/style\.css\?v=[0-9a-f]{10}"', html)
+    assert "/portfolio/experience/#role-miele" in {e["url"] for e in search_index(html)}
 
 
 @pytest.mark.parametrize("asset", ["static/style.css", "static/site.js"])
@@ -100,7 +155,6 @@ def test_css_and_js_links_carry_a_content_version(asset):
     html = client.get("/").text
     match = re.search(rf'"/{asset}\?v=([0-9a-f]{{10}})"', html)
     assert match, f"{asset} has no version"
-    # The versioned URL still serves the file.
     assert client.get(f"/{asset}?v={match.group(1)}").status_code == 200
 
 

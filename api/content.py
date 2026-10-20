@@ -113,6 +113,9 @@ def load_experience() -> list[dict]:
                 "slug": path.stem,
                 "file": f"content/experience/{path.name}",
                 "dates": date_range(post["start"], post["end"]),
+                "iso_dates": f"{iso_month(post['start'])} · {iso_month(post['end'])}",
+                "city": str(post.get("location", "")).split(",")[0].lower(),
+                "current": str(post["end"]).lower() == "present",
                 "intro": body["paragraphs"],
                 "bullets": body["bullets"],
                 "body_html": to_html(section_markdown(body)),
@@ -139,6 +142,8 @@ def load_projects() -> list[dict]:
                 "paragraphs": [first, *rest],
                 "bullets": body["bullets"],
                 "category": post.get("category", "Personal"),
+                "short_title": post["title"].split(":")[0].strip(),
+                "year": str(post["start"]).split("-")[0],
                 "status_label": project_status(post.metadata),
                 "more_html": to_html(more) if more else "",
             }
@@ -173,6 +178,22 @@ def load_page(name: str) -> dict:
         "sections": sections,
         "html_by_heading": raw,
     }
+
+
+def load_stack() -> dict:
+    """The "how I work" pipeline: title, label and five steps from content/stack.md."""
+    post = frontmatter.load(CONTENT_DIR / "stack.md")
+    return {**post.metadata, "file": "content/stack.md", "intro": post.content.strip()}
+
+
+def iso_month(value) -> str:
+    """ "2026-05" stays "2026-05"; "present" becomes "present"."""
+    text = str(value)
+    return "present" if text.lower() == "present" else "-".join(text.split("-")[:2])
+
+
+def snake(label: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", label.lower()).strip("_")
 
 
 def months_between(start, end=None) -> int:

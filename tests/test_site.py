@@ -35,7 +35,7 @@ def test_experience_lists_newest_role_first():
 
 def test_experience_shows_cv_dates():
     html = client.get("/experience").text
-    for dates in ("05/2026 – Present", "08/2024 – 03/2026", "07/2022 – 07/2024"):
+    for dates in ("2026-05 · present", "2024-08 · 2026-03", "2022-07 · 2024-07"):
         assert dates in html
 
 
@@ -72,7 +72,7 @@ def test_projects_page_shows_all_projects():
     html = client.get("/projects").text
     for title in ("AdhereAI", "ShopFlow", "Portfolio and AI Lab"):
         assert title in html
-    assert "In development" in html
+    assert "in development" in html
 
 
 def test_navigation_lists_every_page():
@@ -88,15 +88,14 @@ def test_cv_download_is_a_pdf():
     assert response.content.startswith(b"%PDF")
 
 
-def test_home_shows_key_facts_and_explore_cards():
-    html = client.get("/").text
-    for text in ("Key facts", "Explore", "data engineering roles", "Available from 12/2026"):
+def test_about_shows_key_facts_and_photo():
+    html = client.get("/about").text
+    for text in ("profile.yaml", "Universität Bielefeld", "From 12/2026"):
         assert text in html
 
 
-@pytest.mark.parametrize("path", ["/", "/about"])
-def test_profile_photo_is_shown_with_alt_text(path):
-    html = client.get(path).text
+def test_profile_photo_is_shown_with_alt_text():
+    html = client.get("/about").text
     assert 'src="/static/profile.jpg" alt="Photo of Blessing Adegbenle"' in html
     image = client.get("/static/profile.jpg")
     assert image.status_code == 200

@@ -13,7 +13,7 @@ const timing = document.getElementById("timing");
 
 function setStatus(element, state) {
   element.dataset.state = state;
-  element.textContent = state === "online" ? "Online" : "Offline";
+  element.textContent = state === "online" ? "online" : "offline";
 }
 
 async function refreshHealth() {
@@ -34,13 +34,13 @@ function renderSources(sources) {
     item.value = source.n;
     const title = document.createElement("p");
     title.className = "source-title";
-    title.textContent = `${source.label} (${source.section})`;
+    title.textContent = `${source.label} · ${source.section}`;
     const snippet = document.createElement("p");
     snippet.className = "source-snippet";
     snippet.textContent = source.snippet;
     const score = document.createElement("p");
     score.className = "source-score";
-    score.textContent = `Similarity ${source.score.toFixed(2)}`;
+    score.textContent = `similarity ${source.score.toFixed(2)}`;
     item.append(title, snippet, score);
     sourcesList.append(item);
   }
@@ -67,7 +67,7 @@ async function ask(question) {
     if (response.ok) {
       answerEl.textContent = data.answer;
       renderSources(data.sources);
-      timing.textContent = `Answered in ${data.seconds.toFixed(1)} s`;
+      timing.textContent = `${data.sources.length} sources · ${data.seconds.toFixed(1)} s`;
     } else if (response.status === 422) {
       showMessage("Please enter a question of up to 500 characters.");
     } else {

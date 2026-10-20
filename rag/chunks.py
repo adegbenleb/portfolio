@@ -18,7 +18,7 @@ ID_NAMESPACE = uuid.UUID("6f1d4c2e-8a57-4b0e-9c1d-2b7e5f3a9d10")
 class Chunk:
     text: str
     file: str
-    section: str  # profile, about, experience, skills or project
+    section: str  # profile, about, experience, skills, stack or project
     label: str  # company for experience, otherwise a title
     dates: str = ""
     index: int = 0  # position within its file, used for the stable ID
@@ -48,6 +48,7 @@ def profile_chunks() -> list[Chunk]:
         f"Profile: {profile['name']}, {profile['headline']}. Based in {profile['location']}. "
         f"Languages: {', '.join(profile['languages'])}.",
         f"Profile summary: {profile['summary']}",
+        *([f"In short: {profile['tagline']}"] if profile.get("tagline") else []),
         f"Contact details for {profile['name']}: email {profile['email']}, "
         f"LinkedIn {profile['linkedin']}, GitHub {profile['github']}.",
     ]
@@ -163,7 +164,32 @@ def about_chunks() -> list[Chunk]:
     return chunks
 
 
+def stack_chunks() -> list[Chunk]:
+    """One chunk per step of the "how I work" pipeline in content/stack.md."""
+    stack = content.load_stack()
+    return [
+        Chunk(
+            text=(
+                # Neutral prefix: starting with "How Blessing works" matched every question
+                # containing the name or "work" and pushed real answers out (see CLAUDE.md).
+                f"Data pipeline stage {i} of {len(stack['steps'])}, {step['name']} "
+                f"({step['stage']}): {', '.join(step['items'])}."
+            ),
+            file=stack["file"],
+            section="stack",
+            label=f"How I work: {step['name']}",
+            index=i - 1,
+        )
+        for i, step in enumerate(stack["steps"], start=1)
+    ]
+
+
 def build_chunks() -> list[Chunk]:
     return (
-        profile_chunks() + about_chunks() + experience_chunks() + skills_chunks() + project_chunks()
+        profile_chunks()
+        + about_chunks()
+        + experience_chunks()
+        + skills_chunks()
+        + stack_chunks()
+        + project_chunks()
     )

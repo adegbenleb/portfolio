@@ -88,15 +88,6 @@ def load_recorded_examples() -> dict:
     return json.loads(RECORDED_EXAMPLES.read_text())
 
 
-def achievements(profile: dict, career: dict) -> list[dict]:
-    """The home page strip: the profile highlights plus facts computed from experience."""
-    roles = len(career["companies"])
-    return [
-        *profile.get("highlights", []),
-        {"value": str(roles), "label": "data engineering roles"},
-    ]
-
-
 def key_facts(profile: dict, career: dict) -> list[dict]:
     education = next((s for s in profile["sections"] if s["heading"] == "Education"), None)
     degree = ""
@@ -118,21 +109,51 @@ def key_facts(profile: dict, career: dict) -> list[dict]:
     return [{"label": label, "value": value} for label, value in facts if value]
 
 
+def metrics(profile: dict) -> list[dict]:
+    """Highlights as dashboard metrics with snake_case labels, e.g. products_ingested."""
+    return [
+        {"label": content.snake(item["label"]), "value": item["value"]}
+        for item in profile.get("highlights", [])
+    ]
+
+
+def lab_teaser() -> dict | None:
+    """A real recorded answer for the home page console, never a made-up one."""
+    examples = load_recorded_examples().get("examples", [])
+    with_sources = [e for e in examples if e.get("sources")]
+    preferred = [e for e in with_sources if "Miele" in e["question"]]
+    return (preferred or with_sources or [None])[0]
+
+
 def page(key: str, static_site: bool = False) -> tuple[str, dict]:
     """Template name and page-specific context for one page."""
     if key == "home":
-        profile, career = content.load_profile(), content.career_summary()
+        profile = content.load_profile()
+        roles = content.load_experience()
+        current = next((role for role in roles if role["current"]), None)
+        projects = content.load_projects()
+        present = {project["category"] for project in projects}
         return "home.html", {
-            "achievements": achievements(profile, career),
-            "key_facts": key_facts(profile, career),
-            "explore": [(path, label, EXPLORE[k]) for path, k, label in NAV if k in EXPLORE],
+            "current_role": current,
+            "metrics": metrics(profile),
+            "stack": content.load_stack(),
+            "projects": projects,
+            "categories": [c for c in PROJECT_CATEGORIES if c in present],
+            "teaser": lab_teaser(),
+            "recorded_on": load_recorded_examples().get("recorded_on", ""),
+            "cv_path": CV_DOWNLOAD_PATH,
         }
     if key == "about":
-        return "about.html", {"about": content.load_page("about")}
+        profile, career = content.load_profile(), content.career_summary()
+        return "about.html", {
+            "about": content.load_page("about"),
+            "key_facts": key_facts(profile, career),
+        }
     if key == "experience":
         return "experience.html", {
             "roles": content.load_experience(),
             "career": content.career_summary(),
+            "intro": content.load_profile().get("experience_intro", ""),
         }
     if key == "projects":
         projects = content.load_projects()

@@ -1,39 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Contact | {{ profile.name }}{% endblock %}
+{% block title %}Contact, {{ profile.name }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h1>Contact</h1>
-  <p class="lead">The best way to reach me is by email. I am also happy to connect on LinkedIn.</p>
+  <p class="section-label">select * from contact</p>
+  <h1 class="page-title">Contact</h1>
+  <p class="page-lead">The best way to reach me is by email. I am also happy to connect on LinkedIn.</p>
 </header>
 
-<dl class="panel contact-list">
-  <div class="contact-row">
-    <dt>Email</dt>
-    <dd><a class="text-link" href="mailto:{{ profile.email }}">{{ profile.email }}</a></dd>
-  </div>
-  <div class="contact-row">
-    <dt>LinkedIn</dt>
-    <dd><a class="text-link" href="https://{{ profile.linkedin }}" rel="noopener">{{ profile.linkedin }}</a></dd>
-  </div>
-  <div class="contact-row">
-    <dt>GitHub</dt>
-    <dd><a class="text-link" href="https://{{ profile.github }}" rel="noopener">{{ profile.github }}</a></dd>
-  </div>
-  <div class="contact-row">
-    <dt>Location</dt>
-    <dd>{{ profile.location }}</dd>
-  </div>
-  {% if profile.relocation %}
-  <div class="contact-row">
-    <dt>Relocation</dt>
-    <dd>{{ profile.relocation }}</dd>
-  </div>
-  {% endif %}
-  {% if profile.available %}
-  <div class="contact-row">
-    <dt>Available from</dt>
-    <dd>{{ profile.available }}</dd>
-  </div>
-  {% endif %}
-</dl>
+<div class="panel console contact-panel">
+  <div class="console-bar"><span>contact</span><span><span class="dot dot-green" aria-hidden="true"></span> open to work{% if profile.available %} · from {{ profile.available }}{% endif %}</span></div>
+  <dl class="facts">
+    <div class="fact"><dt>email:</dt><dd><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></dd></div>
+    <div class="fact"><dt>linkedin:</dt><dd><a href="https://{{ profile.linkedin }}" rel="noopener">{{ profile.linkedin }}</a></dd></div>
+    <div class="fact"><dt>github:</dt><dd><a href="https://{{ profile.github }}" rel="noopener">{{ profile.github }}</a></dd></div>
+    <div class="fact"><dt>location:</dt><dd>{{ profile.location }}</dd></div>
+    {% if profile.relocation %}<div class="fact"><dt>relocation:</dt><dd>{{ profile.relocation }}</dd></div>{% endif %}
+    {% if profile.available %}<div class="fact"><dt>available_from:</dt><dd>{{ profile.available }}</dd></div>{% endif %}
+  </dl>
+</div>
 {% endblock %}

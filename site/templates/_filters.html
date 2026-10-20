@@ -1,0 +1,8 @@
+{% if categories | length > 1 %}
+<div class="filters" role="group" aria-label="Filter projects by category">
+  <button type="button" class="filter" data-filter="all" aria-pressed="true">all</button>
+  {% for category in categories %}
+  <button type="button" class="filter" data-filter="{{ category }}" aria-pressed="false">{{ category | lower }}</button>
+  {% endfor %}
+</div>
+{% endif %}

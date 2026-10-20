@@ -1,33 +1,38 @@
 {% extends "base.html" %}
-{% block title %}Media | {{ profile.name }}{% endblock %}
+{% block title %}Media, {{ profile.name }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h1>Media</h1>
-  <p class="lead">A short demo of the AI Lab and my CV to download.</p>
+  <p class="section-label">ls media/</p>
+  <h1 class="page-title">Media</h1>
+  <p class="page-lead">A short demo of the AI Lab and my CV to download.</p>
 </header>
 
 <div class="media-layout">
-  <section class="panel" aria-labelledby="video-heading">
-    <h2 id="video-heading">AI Lab demo</h2>
-    {% if has_video %}
-    <video class="demo-video" controls preload="metadata" playsinline poster="{{ url('static/demo-poster.jpg') }}">
-      <source src="{{ url('static/demo.mp4') }}" type="video/mp4">
-      Your browser cannot play this video. <a href="{{ url('static/demo.mp4') }}">Download the demo video</a>.
-    </video>
-    <p class="meta">Recorded from the local AI Lab: three questions answered by a local LLM, each with its sources.</p>
-    {% else %}
-    <div class="demo-placeholder"><p>The demo video is on its way.</p></div>
-    {% endif %}
+  <section class="panel console" aria-labelledby="video-heading">
+    <div class="console-bar"><h2 id="video-heading" class="bar-title">demo.mp4 · ai lab</h2><span>recorded locally</span></div>
+    <div class="console-body">
+      {% if has_video %}
+      <video class="demo-video" controls preload="metadata" playsinline poster="{{ url('static/demo-poster.jpg') }}">
+        <source src="{{ url('static/demo.mp4') }}" type="video/mp4">
+        Your browser cannot play this video. <a href="{{ url('static/demo.mp4') }}">Download the demo video</a>.
+      </video>
+      <p class="muted-note">Three questions answered by a local LLM, each with its sources.</p>
+      {% else %}
+      <div class="placeholder"><p>The demo video is on its way.</p></div>
+      {% endif %}
+    </div>
   </section>
 
-  <section class="panel cv-download" aria-labelledby="cv-heading">
-    <h2 id="cv-heading">CV</h2>
-    <p>My CV as a PDF, generated from the same content as this website.</p>
-    {% if has_cv %}
-    <a class="button button-primary" href="{{ url(cv_path) }}" download>Download CV (PDF)</a>
-    {% else %}
-    <p class="meta">The PDF is being prepared.</p>
-    {% endif %}
+  <section class="panel console" aria-labelledby="cv-heading">
+    <div class="console-bar"><h2 id="cv-heading" class="bar-title">cv.pdf</h2><span>no phone number</span></div>
+    <div class="console-body">
+      <p>My CV as a PDF, generated from the same content as this website.</p>
+      {% if has_cv %}
+      <a class="btn btn-primary" href="{{ url(cv_path) }}" download>Download CV</a>
+      {% else %}
+      <p class="muted-note">The PDF is being prepared.</p>
+      {% endif %}
+    </div>
   </section>
 </div>
 {% endblock %}

@@ -1,14 +1,16 @@
 {% extends "base.html" %}
-{% block title %}Skills | {{ profile.name }}{% endblock %}
+{% block title %}Skills, {{ profile.name }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h1>Skills</h1>
+  <p class="section-label">describe skills · {{ groups | length }} groups</p>
+  <h1 class="page-title">Skills</h1>
 </header>
 
-<div class="skill-groups">
+<div class="grid-panels">
   {% for group in groups %}
-  <section class="panel skill-group" aria-labelledby="skills-{{ loop.index }}">
-    <h2 id="skills-{{ loop.index }}" class="panel-label mono">{{ group.label }}</h2>
+  <section class="panel card" id="skills-{{ loop.index }}" aria-labelledby="skills-title-{{ loop.index }}">
+    <p class="step-label">{{ "%02d" | format(loop.index) }}</p>
+    <h2 id="skills-title-{{ loop.index }}" class="card-title">{{ group.label }}</h2>
     <ul class="tags">
       {% for entry in group.entries %}<li class="tag">{{ entry.name }}{% if entry.note %} <span class="tag-note">{{ entry.note }}</span>{% endif %}</li>{% endfor %}
     </ul>

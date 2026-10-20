@@ -1,64 +1,59 @@
 {% extends "base.html" %}
-{% block title %}AI Lab | {{ profile.name }}{% endblock %}
+{% block title %}AI Lab, {{ profile.name }}{% endblock %}
 {% block content %}
 <header class="page-header">
-  <h1>AI Lab</h1>
-  <p class="lead">The AI Lab answers questions about my experience, skills and projects with retrieval-augmented generation. It runs on a local LLM on my own machine, so it is live during demos rather than on this website. Below are a demo video and answers recorded from the real pipeline.</p>
+  <p class="section-label">ai-lab · rag over my profile</p>
+  <h1 class="page-title">AI Lab</h1>
+  <p class="page-lead">The AI Lab answers questions about my experience, skills and projects with retrieval-augmented generation. It runs on a local LLM on my own machine, so it is live during demos rather than on this website. Below are a demo video and answers recorded from the real pipeline.</p>
 </header>
 
-<section class="panel demo" aria-labelledby="demo-heading">
-  <h2 id="demo-heading">Demo</h2>
-  {% if has_video %}
-  <video class="demo-video" controls preload="metadata" playsinline poster="{{ url('static/demo-poster.jpg') }}">
-    <source src="{{ url('static/demo.mp4') }}" type="video/mp4">
-    Your browser cannot play this video. <a href="{{ url('static/demo.mp4') }}">Download the demo video</a>.
-  </video>
-  {% else %}
-  <div class="demo-placeholder">
-    <p>The demo video is on its way.</p>
+<section class="panel console" aria-labelledby="demo-heading">
+  <div class="console-bar"><h2 id="demo-heading" class="bar-title">demo.mp4</h2><span>recorded locally</span></div>
+  <div class="console-body">
+    {% if has_video %}
+    <video class="demo-video" controls preload="metadata" playsinline poster="{{ url('static/demo-poster.jpg') }}">
+      <source src="{{ url('static/demo.mp4') }}" type="video/mp4">
+      Your browser cannot play this video. <a href="{{ url('static/demo.mp4') }}">Download the demo video</a>.
+    </video>
+    {% else %}
+    <div class="placeholder"><p>The demo video is on its way.</p></div>
+    {% endif %}
   </div>
-  {% endif %}
 </section>
 
-<section class="recorded" aria-labelledby="recorded-heading">
-  <h2 id="recorded-heading">Recorded examples</h2>
+<section class="section recorded" aria-labelledby="recorded-heading">
+  <p class="section-label">select * from recorded_examples</p>
+  <h2 id="recorded-heading" class="section-title">Recorded examples</h2>
   {% if recorded.examples %}
-  <p class="meta">Recorded from the local AI Lab on {{ recorded.recorded_on }} with {{ recorded.model }}. The answers and sources are shown exactly as the pipeline returned them.</p>
-  <div class="cards">
+  <p class="muted-note">Recorded from the local AI Lab on {{ recorded.recorded_on }} with {{ recorded.model }}. The answers and sources are shown exactly as the pipeline returned them.</p>
+  <div class="example-stack">
     {% for example in recorded.examples %}
-    <article class="panel card example-card" aria-labelledby="example-{{ loop.index }}">
-      <h3 id="example-{{ loop.index }}" class="example-question">{{ example.question }}</h3>
-      <p class="answer">{{ example.answer }}</p>
-      {% if example.sources %}
-      <div class="sources">
-        <h4>Sources</h4>
+    <article class="panel console" aria-labelledby="example-{{ loop.index }}">
+      <div class="console-bar"><span>run {{ "%02d" | format(loop.index) }}</span><span>{{ "guardrail" if example.note else "rag answer" }}</span></div>
+      <div class="console-body">
+        <p class="ask-label">ask&gt;</p>
+        <h3 id="example-{{ loop.index }}" class="ask-question">{{ example.question }}</h3>
+        <p class="answer-text">{{ example.answer }}</p>
+        {% if example.sources %}
         <ol class="source-list">
           {% for source in example.sources %}
           <li value="{{ source.n }}">
-            <p class="source-title">{{ source.label }} ({{ source.section }})</p>
+            <p class="source-title">{{ source.label }} · {{ source.section }}</p>
             <p class="source-snippet">{{ source.snippet }}</p>
           </li>
           {% endfor %}
         </ol>
+        {% elif example.note %}
+        <p class="muted-note">{{ example.note }}</p>
+        {% endif %}
       </div>
-      {% elif example.note %}
-      <p class="meta">{{ example.note }}</p>
-      {% endif %}
     </article>
     {% endfor %}
   </div>
   {% else %}
-  <p class="meta">No recorded examples yet.</p>
+  <p class="muted-note">No recorded examples yet.</p>
   {% endif %}
 </section>
 
-<div class="lab-docs dag">
-  {% for heading, html in lab.html_by_heading.items() %}
-  <section class="dag-step lab-doc" aria-labelledby="lab-doc-{{ loop.index }}">
-    <h2 id="lab-doc-{{ loop.index }}" class="dag-title">{{ heading }}</h2>
-    <div class="panel prose">{{ html | safe }}</div>
-  </section>
-  {% endfor %}
-  <p><a class="text-link" href="https://{{ profile.github }}/portfolio" rel="noopener">Source code on GitHub</a></p>
-</div>
+{% include "_lab_docs.html" %}
 {% endblock %}

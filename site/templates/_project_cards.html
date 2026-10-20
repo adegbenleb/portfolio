@@ -1,0 +1,31 @@
+{# Project cards, shared by the home page and the projects page. Set detailed=true for more. #}
+<div class="cards">
+  {% for project in projects %}
+  <article class="panel card project-card" id="project-{{ project.slug }}" data-category="{{ project.category }}" aria-labelledby="project-title-{{ project.slug }}">
+    <div class="card-meta">
+      <span>{{ project.category | lower }} · {{ project.year }}</span>
+      {% if project.status_label %}
+      {% set status = project.status_label | lower %}
+      <span class="status {{ 'status-amber' if 'development' in status else 'status-green' }}">{{ 'running' if status == 'ongoing' else status }}</span>
+      {% endif %}
+    </div>
+    <h3 id="project-title-{{ project.slug }}" class="card-title">{{ project.short_title if not detailed else project.title }}</h3>
+    {% if detailed %}<p class="card-sub">{{ project.type }} · {{ project.dates }}</p>{% endif %}
+    {% if detailed and project.result %}<p class="card-result"><span>result:</span> {{ project.result }}</p>{% endif %}
+    <p class="card-text">{{ project.description }}</p>
+    {% if detailed and project.more_html %}
+    <details class="more">
+      <summary>more details</summary>
+      <div class="prose">{{ project.more_html | safe }}</div>
+    </details>
+    {% endif %}
+    <p class="card-tags">{{ project.tags | join(" · ") | lower }}</p>
+    {% if detailed and (project.url or project.github) %}
+    <p class="card-links">
+      {% if project.url %}<a href="{{ project.url }}" rel="noopener">live site →</a>{% endif %}
+      {% if project.github %}<a href="https://{{ project.github }}" rel="noopener">{{ project.github }}</a>{% endif %}
+    </p>
+    {% endif %}
+  </article>
+  {% endfor %}
+</div>

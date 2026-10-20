@@ -4,6 +4,7 @@ company: GI Group
 location: Bielefeld, Germany
 start: 2022-07
 end: 2024-07
+subtitle: "Marketing and business data in Snowflake"
 domain: marketing, CRM and business data
 tags: [Python, SQL, Airflow, Git, Docker, Snowflake, PostgreSQL, MongoDB, DuckDB, BigQuery, Google Cloud, GA4, Google Tag Manager, Tableau]
 ---

@@ -1,46 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Projects | {{ profile.name }}{% endblock %}
+{% block title %}Projects, {{ profile.name }}{% endblock %}
 {% block content %}
-<header class="page-header">
-  <h1>Projects</h1>
+<header class="page-header section-head">
+  <div>
+    <p class="section-label">select * from projects</p>
+    <h1 class="page-title">Projects</h1>
+  </div>
+  {% include "_filters.html" %}
 </header>
-
-{% if categories | length > 1 %}
-<div class="filters" role="group" aria-label="Filter projects by category">
-  <button type="button" class="chip filter" data-filter="all" aria-pressed="true">All</button>
-  {% for category in categories %}
-  <button type="button" class="chip filter" data-filter="{{ category }}" aria-pressed="false">{{ category }}</button>
-  {% endfor %}
-</div>
-{% endif %}
-
-<div class="cards" id="project-cards">
-  {% for project in projects %}
-  <article class="panel card project-card" id="project-{{ project.slug }}" data-category="{{ project.category }}" aria-labelledby="project-title-{{ project.slug }}">
-    <p class="badges">
-      <span class="badge badge-category">{{ project.category }}</span>
-      {% if project.status_label %}<span class="badge badge-status">{{ project.status_label }}</span>{% endif %}
-    </p>
-    <p class="eyebrow mono">{{ project.type }}</p>
-    <h2 id="project-title-{{ project.slug }}">{{ project.title }}</h2>
-    <p class="meta mono"><time>{{ project.dates }}</time></p>
-    {% if project.result %}<p class="project-result"><span class="result-label">Result:</span> {{ project.result }}</p>{% endif %}
-    <p>{{ project.description }}</p>
-    {% if project.more_html %}
-    <details>
-      <summary>More details</summary>
-      <div class="prose">{{ project.more_html | safe }}</div>
-    </details>
-    {% endif %}
-    <ul class="tags" aria-label="Tools used">
-      {% for tag in project.tags %}<li class="tag">{{ tag }}</li>{% endfor %}
-    </ul>
-    <p class="project-links">
-      {% if project.url %}<a class="text-link" href="{{ project.url }}" rel="noopener">Live site</a>{% endif %}
-      {% if project.github %}<a class="text-link" href="https://{{ project.github }}" rel="noopener">GitHub: {{ project.github }}</a>{% endif %}
-    </p>
-  </article>
-  {% endfor %}
-</div>
+{% set detailed = true %}
+{% include "_project_cards.html" %}
 {% endblock %}
 {% block scripts %}<script src="{{ url('static/projects.js') }}" defer></script>{% endblock %}

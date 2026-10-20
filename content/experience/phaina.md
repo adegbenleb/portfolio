@@ -4,6 +4,7 @@ company: Phaina
 location: Bielefeld, Germany
 start: 2026-05
 end: present
+subtitle: "Argus, software for digital product advice on technical products"
 domain: product data for technical products
 tags: [Python, PostgreSQL, Qdrant, Neo4j, RAG, Agno, LangSmith, GraphQL, Pydantic]
 ---

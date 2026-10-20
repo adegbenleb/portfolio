@@ -4,6 +4,7 @@ company: Miele
 location: Remote, Germany
 start: 2024-08
 end: 2026-03
+subtitle: "SAP finance data in a Databricks Lakehouse"
 domain: SAP finance and operational reporting
 tags: [SAP, Azure Data Factory, Databricks, PySpark, Delta Lake, dbt, Great Expectations, Unity Catalog, Power BI, Terraform]
 ---
