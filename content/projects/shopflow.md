@@ -5,7 +5,7 @@ category: Personal
 result: almost 100,000 orders modelled, around 40 dbt tests
 start: 2026-10
 end: present
-github: github.com/adegbenleb
+github: github.com/adegbenleb/shopflow-platform
 tags: [Python, SQL, dbt, Airflow, PostgreSQL, Neo4j, LangGraph, Ollama, FastAPI, Docker, GitHub Actions]
 ---
 

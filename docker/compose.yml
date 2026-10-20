@@ -4,7 +4,7 @@ services:
   qdrant:
     image: qdrant/qdrant:v1.13.0
     ports:
-      - "16335:6333"
+      - "127.0.0.1:16335:6333"  # localhost only: never expose this machine
     volumes:
       - qdrant_storage:/qdrant/storage
     restart: unless-stopped
