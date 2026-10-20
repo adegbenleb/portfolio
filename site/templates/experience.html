@@ -5,6 +5,30 @@
   <h1>Experience</h1>
 </header>
 
+<section class="panel glance" aria-labelledby="glance-heading">
+  <h2 id="glance-heading">Career at a glance</h2>
+  <dl class="glance-grid">
+    <div>
+      <dt>Years in data engineering</dt>
+      <dd><span class="glance-value">{{ career.years }}</span> since {{ career.since }}</dd>
+    </div>
+    <div>
+      <dt>Companies</dt>
+      <dd><span class="glance-value">{{ career.companies | length }}</span> {{ career.companies | join(", ") }}</dd>
+    </div>
+    <div class="glance-domains">
+      <dt>Domains</dt>
+      <dd>
+        <ul>
+          {% for item in career.domains %}
+          <li><strong>{{ item.company }}:</strong> {{ item.domain }}</li>
+          {% endfor %}
+        </ul>
+      </dd>
+    </div>
+  </dl>
+</section>
+
 <ol class="timeline">
   {% for role in roles %}
   <li class="timeline-item">
@@ -18,6 +42,19 @@
         </p>
       </header>
       <div class="prose">{{ role.body_html | safe }}</div>
+      {% if role.case_study %}
+      <details class="case-study">
+        <summary>Case study</summary>
+        <dl>
+          {% for item in role.case_study %}
+          <div class="case-row">
+            <dt>{{ item.label }}</dt>
+            <dd>{{ item.text }}</dd>
+          </div>
+          {% endfor %}
+        </dl>
+      </details>
+      {% endif %}
       <ul class="tags" aria-label="Tools used">
         {% for tag in role.tags %}<li class="tag">{{ tag }}</li>{% endfor %}
       </ul>

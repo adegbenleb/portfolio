@@ -1,28 +1,42 @@
 {% extends "base.html" %}
 {% block title %}{{ profile.name }} | {{ profile.headline }}{% endblock %}
 {% block content %}
-<section class="hero">
-  <p class="eyebrow">{{ profile.location }}</p>
-  <h1>{{ profile.name }}</h1>
-  <p class="headline">{{ profile.headline }}</p>
-  <p class="intro">{{ profile.intro }}</p>
-  {% if profile.relocation or profile.available %}
-  <p class="availability">
-    {% if profile.relocation %}<span>{{ profile.relocation }}</span>{% endif %}
-    {% if profile.available %}<span>Available from {{ profile.available }}</span>{% endif %}
-  </p>
-  {% endif %}
-  <div class="actions">
-    <a class="button button-primary" href="{{ url('experience') }}">View experience</a>
-    <a class="button" href="{{ url('projects') }}">Projects</a>
-    <a class="button" href="{{ url('contact') }}">Contact</a>
-  </div>
-</section>
+<div class="home-top">
+  <section class="hero">
+    <p class="eyebrow">{{ profile.location }}</p>
+    <h1>{{ profile.name }}</h1>
+    <p class="headline">{{ profile.headline }}</p>
+    <p class="intro">{{ profile.intro }}</p>
+    {% if profile.relocation or profile.available %}
+    <p class="availability">
+      {% if profile.relocation %}<span>{{ profile.relocation }}</span>{% endif %}
+      {% if profile.available %}<span>Available from {{ profile.available }}</span>{% endif %}
+    </p>
+    {% endif %}
+    <div class="actions">
+      <a class="button button-primary" href="{{ url('experience') }}">View experience</a>
+      <a class="button" href="{{ url('projects') }}">Projects</a>
+      <a class="button" href="{{ url('contact') }}">Contact</a>
+    </div>
+  </section>
+
+  <aside class="panel key-facts" aria-labelledby="facts-heading">
+    <h2 id="facts-heading">Key facts</h2>
+    <dl>
+      {% for fact in key_facts %}
+      <div class="key-fact">
+        <dt>{{ fact.label }}</dt>
+        <dd>{{ fact.value }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+  </aside>
+</div>
 
 <section aria-labelledby="highlights-heading">
   <h2 id="highlights-heading" class="visually-hidden">Highlights</h2>
   <ul class="facts">
-    {% for fact in profile.highlights %}
+    {% for fact in achievements %}
     <li class="fact">
       <span class="fact-value">{{ fact.value }}</span>
       <span class="fact-label">{{ fact.label }}</span>
@@ -31,11 +45,17 @@
   </ul>
 </section>
 
-<aside class="panel lab-teaser" aria-labelledby="lab-heading">
-  <div>
-    <h2 id="lab-heading">AI Lab</h2>
-    <p>Ask questions about my experience, skills and projects. Answers come from the same content you see on this site, with sources.</p>
-  </div>
-  <a class="button button-primary" href="{{ url('lab') }}">Open the AI Lab</a>
-</aside>
+<section class="explore" aria-labelledby="explore-heading">
+  <h2 id="explore-heading">Explore</h2>
+  <ul class="explore-grid">
+    {% for path, label, description in explore %}
+    <li>
+      <a class="panel explore-card" href="{{ url(path) }}">
+        <span class="explore-title">{{ label }}</span>
+        <span class="explore-text">{{ description }}</span>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
 {% endblock %}

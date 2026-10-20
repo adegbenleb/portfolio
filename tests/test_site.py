@@ -9,7 +9,7 @@ from rag.config import settings
 
 client = TestClient(main.app)
 
-PAGES = ["/", "/experience", "/projects", "/skills", "/lab", "/contact"]
+PAGES = ["/", "/about", "/experience", "/projects", "/skills", "/lab", "/media", "/contact"]
 # The real number must never appear in the repo, so the test looks for any phone-like text.
 PHONE_PATTERN = re.compile(r"\+\d[\d\s-]{6,}\d|\btel:")
 
@@ -66,3 +66,29 @@ def test_health_reports_offline_when_service_is_unreachable(monkeypatch):
     monkeypatch.setattr(settings, "ollama_url", "http://127.0.0.1:9")
     monkeypatch.setattr(settings, "qdrant_url", "http://127.0.0.1:9")
     assert client.get("/api/health").json() == {"ollama": "offline", "qdrant": "offline"}
+
+
+def test_projects_page_shows_all_projects():
+    html = client.get("/projects").text
+    for title in ("AdhereAI", "ShopFlow", "Portfolio and AI Lab"):
+        assert title in html
+    assert "In development" in html
+
+
+def test_navigation_lists_every_page():
+    html = client.get("/").text
+    for href in PAGES:
+        assert f'href="{href}"' in html
+
+
+def test_cv_download_is_a_pdf():
+    response = client.get("/files/Blessing_Adegbenle_CV.pdf")
+    assert response.status_code == 200
+    assert response.headers["content-type"] == "application/pdf"
+    assert response.content.startswith(b"%PDF")
+
+
+def test_home_shows_key_facts_and_explore_cards():
+    html = client.get("/").text
+    for text in ("Key facts", "Explore", "data engineering roles", "Available from 12/2026"):
+        assert text in html

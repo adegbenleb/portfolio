@@ -678,3 +678,256 @@ dd {
 .how-it-works li + li {
   margin-top: 0.4rem;
 }
+
+/* Home: hero with key facts, explore cards */
+
+.home-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 1fr);
+  gap: 2rem;
+  align-items: start;
+  margin-bottom: 2.5rem;
+}
+
+.home-top .hero {
+  margin-bottom: 0;
+}
+
+.key-facts dl {
+  margin: 0;
+}
+
+.key-fact {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.key-fact:last-child {
+  border-bottom: 0;
+}
+
+.key-fact dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.key-fact dd {
+  margin: 0;
+}
+
+.explore {
+  margin-top: 1rem;
+}
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  height: 100%;
+  color: var(--text);
+  text-decoration: none;
+  transition: border-color 0.15s;
+}
+
+.explore-card:hover {
+  border-color: var(--accent);
+}
+
+.explore-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.explore-text {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* About */
+
+.about {
+  max-width: 44rem;
+}
+
+.about-section {
+  margin-bottom: 2rem;
+}
+
+/* Experience: career at a glance, case studies */
+
+.glance {
+  margin-bottom: 2.5rem;
+}
+
+.glance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: 1.25rem;
+  margin: 0;
+}
+
+.glance-grid dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.glance-value {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.glance-domains ul {
+  margin: 0.25rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.case-study {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.case-study dl {
+  margin: 0.75rem 0 0;
+}
+
+.case-row + .case-row {
+  margin-top: 0.6rem;
+}
+
+.case-row dt {
+  font-weight: 600;
+}
+
+/* Projects: filters, badges, results */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter[aria-pressed="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.project-card[hidden] {
+  display: none;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.badge {
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.badge-category {
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.badge-status {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.project-result {
+  padding: 0.5rem 0.75rem;
+  border-left: 3px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.95rem;
+}
+
+.result-label {
+  font-weight: 600;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 1rem 0 0;
+}
+
+/* Media */
+
+.media-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(14rem, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+/* AI Lab docs */
+
+.lab-docs {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.prose ol {
+  padding-left: 1.2rem;
+  margin: 0;
+}
+
+.prose ol li + li {
+  margin-top: 0.4rem;
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.prose code {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 0.9em;
+}
+
+@media (max-width: 860px) {
+  .home-top,
+  .media-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.recorded .cards {
+  align-items: start;
+}

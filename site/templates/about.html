@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}About | {{ profile.name }}{% endblock %}
+{% block content %}
+<header class="page-header">
+  <h1>{{ about.title }}</h1>
+  <p class="lead">{{ profile.headline }}, based in {{ profile.location }}.</p>
+</header>
+
+<div class="about">
+  {% for heading, html in about.html_by_heading.items() %}
+  <section class="about-section" aria-labelledby="about-{{ loop.index }}">
+    <h2 id="about-{{ loop.index }}">{{ heading }}</h2>
+    <div class="prose">{{ html | safe }}</div>
+  </section>
+  {% endfor %}
+</div>
+
+<p class="actions">
+  <a class="button button-primary" href="{{ url('experience') }}">See my experience</a>
+  <a class="button" href="{{ url('media') }}">Download my CV</a>
+</p>
+{% endblock %}

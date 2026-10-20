@@ -8,7 +8,7 @@ from typing import Annotated
 import httpx
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, StringConstraints
@@ -79,6 +79,23 @@ def lab(request: Request):
 @app.get("/contact", response_class=HTMLResponse)
 def contact(request: Request):
     return render(request, "contact")
+
+
+@app.get("/about", response_class=HTMLResponse)
+def about(request: Request):
+    return render(request, "about")
+
+
+@app.get("/media", response_class=HTMLResponse)
+def media(request: Request):
+    return render(request, "media")
+
+
+@app.get(f"/{pages.CV_DOWNLOAD_PATH}")
+def cv_download():
+    if not pages.CV_PDF.exists():
+        raise HTTPException(status_code=404, detail="The CV has not been generated yet.")
+    return FileResponse(pages.CV_PDF, media_type="application/pdf")
 
 
 async def _responds(client: httpx.AsyncClient, url: str) -> bool:

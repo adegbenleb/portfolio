@@ -3,13 +3,13 @@
 import re
 
 import pytest
+from pypdf import PdfReader
 
+from api.pages import CV_PDF
 from build import build, normalise_base
 
-PAGES = [
-    "index.html",
-    *(f"{p}/index.html" for p in ("experience", "projects", "skills", "lab", "contact")),
-]
+SECTIONS = ("about", "experience", "projects", "skills", "lab", "media", "contact")
+PAGES = ["index.html", *(f"{p}/index.html" for p in SECTIONS)]
 INTERNAL_LINK = re.compile(r'(?:href|src)="(/[^"]*)"')
 PHONE_PATTERN = re.compile(r"\+\d[\d\s-]{6,}\d|\btel:")
 
@@ -42,7 +42,8 @@ def test_no_phone_number_on_published_pages(dist, page):
 
 def test_static_lab_has_no_live_parts(dist):
     html = (dist / "lab" / "index.html").read_text()
-    for live_only in ("status-list", "/api/ask", "/api/health", "lab.js", "ask-form"):
+    # The API is documented on the page, but nothing on it may call it.
+    for live_only in ("status-list", "lab.js", "ask-form", "fetch("):
         assert live_only not in html
     assert not (dist / "static" / "lab.js").exists()
 
@@ -64,3 +65,17 @@ def test_cname_is_written_for_a_custom_domain(tmp_path):
 )
 def test_normalise_base(raw, expected):
     assert normalise_base(raw) == expected
+
+
+def test_cv_pdf_is_published_and_has_no_phone_number(dist):
+    published = dist / "files" / "Blessing_Adegbenle_CV.pdf"
+    assert published.is_file()
+    text = "\n".join(page.extract_text() for page in PdfReader(CV_PDF).pages)
+    assert "Blessing Adegbenle" in text  # proves the text extraction worked
+    assert not PHONE_PATTERN.search(text)
+
+
+def test_static_media_page_links_the_cv_and_video(dist):
+    html = (dist / "media" / "index.html").read_text()
+    assert 'href="/portfolio/files/Blessing_Adegbenle_CV.pdf"' in html
+    assert "/portfolio/static/demo.mp4" in html

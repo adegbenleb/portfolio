@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{{ profile.name }}, CV</title>
+  <style>
+    @page { size: A4; margin: 14mm 15mm 12mm; }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: #1c1f24; font: 9.2pt/1.4 "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    h1 { margin: 0; font-size: 21pt; letter-spacing: -0.01em; }
+    h2 { margin: 11pt 0 4pt; padding-bottom: 2pt; border-bottom: 1.2pt solid #0f6b5c; color: #0f6b5c;
+         font-size: 10.5pt; letter-spacing: 0.06em; text-transform: uppercase; }
+    h3 { margin: 0; font-size: 10.2pt; }
+    p { margin: 0 0 4pt; }
+    ul { margin: 3pt 0 0; padding-left: 12pt; }
+    li { margin-bottom: 1.5pt; }
+    a { color: inherit; text-decoration: none; }
+    .headline { margin: 2pt 0 6pt; color: #0f6b5c; font-size: 11.5pt; font-weight: 600; }
+    .contact { color: #4a505c; }
+    .contact span + span::before { content: " | "; color: #9aa0aa; }
+    .entry { margin-bottom: 7pt; }
+    .entry-head, .entry > .sub { break-after: avoid; }
+    li { break-inside: avoid; }
+    .entry-head { display: flex; justify-content: space-between; gap: 12pt; }
+    .meta { color: #5b6270; white-space: nowrap; }
+    .sub { color: #5b6270; }
+    .skills { display: grid; grid-template-columns: 34mm 1fr; gap: 2pt 8pt; }
+    .skills dt { font-weight: 600; }
+    .skills dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>{{ profile.name }}</h1>
+    <p class="headline">{{ profile.headline }}</p>
+    <p class="contact">
+      <span>{{ profile.email }}</span><span>{{ profile.location }}</span><span>{{ profile.linkedin }}</span><span>{{ profile.github }}</span>
+    </p>
+    <p class="contact">
+      {% if profile.relocation %}<span>{{ profile.relocation }}</span>{% endif %}{% if profile.available %}<span>Available from {{ profile.available }}</span>{% endif %}<span>Portfolio: adegbenleb.github.io/portfolio</span>
+    </p>
+  </header>
+
+  <h2>Summary</h2>
+  <p>{{ profile.summary }}</p>
+
+  <h2>Professional experience</h2>
+  {% for role in roles %}
+  <section class="entry">
+    <div class="entry-head">
+      <h3>{{ role.title }}, {{ role.company }}</h3>
+      <span class="meta">{{ role.dates }} · {{ role.location }}</span>
+    </div>
+    {% for paragraph in role.intro %}<p class="sub">{{ paragraph }}</p>{% endfor %}
+    <ul>{% for bullet in role.bullets %}<li>{{ bullet }}</li>{% endfor %}</ul>
+  </section>
+  {% endfor %}
+
+  <h2>Projects</h2>
+  {% for project in projects %}
+  <section class="entry">
+    <div class="entry-head">
+      <h3>{{ project.title }}</h3>
+      <span class="meta">{{ project.dates }}</span>
+    </div>
+    <p class="sub">{{ project.type | capitalize }}{% if project.status_label %}, {{ project.status_label | lower }}{% endif %}</p>
+    <p>{{ project.description }}</p>
+  </section>
+  {% endfor %}
+
+  {% for section in profile.sections %}
+  <h2>{{ section.heading }}</h2>
+  <ul>{% for item in section.bullets %}<li>{{ item | replace("**", "") }}</li>{% endfor %}</ul>
+  {% endfor %}
+
+  <h2>Skills</h2>
+  <dl class="skills">
+    {% for group in skills %}<dt>{{ group.label }}</dt><dd>{{ group.tools | join(", ") }}</dd>{% endfor %}
+  </dl>
+</body>
+</html>

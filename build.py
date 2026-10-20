@@ -46,6 +46,11 @@ def build(out_dir: Path, base: str = DEFAULT_BASE, cname: str = "") -> list[Path
         target.write_text(env.get_template(template).render(**context))
         written.append(target)
 
+    if pages.CV_PDF.exists():
+        cv_target = out_dir / pages.CV_DOWNLOAD_PATH
+        cv_target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(pages.CV_PDF, cv_target)
+
     # Serve files as they are, without Jekyll processing.
     (out_dir / ".nojekyll").touch()
     if cname:

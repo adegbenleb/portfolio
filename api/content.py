@@ -2,6 +2,7 @@
 and for the AI Lab's search index (rag/chunks.py reads content through this module too)."""
 
 import re
+from datetime import date
 from pathlib import Path
 
 import frontmatter
@@ -11,6 +12,30 @@ CONTENT_DIR = Path(__file__).resolve().parent.parent / "content"
 
 SKILL_LINE = re.compile(r"^\*\*(?P<label>.+?)\*\*:\s*(?P<items>.+)$")
 TOOL_NOTE = re.compile(r"^(?P<name>.+?)\s*\((?P<note>[^)]+)\)$")
+LABELLED = re.compile(r"^\*\*(?P<label>.+?)\*\*:?\s*(?P<text>.*)$")
+MARKDOWN_EXTENSIONS = ["fenced_code"]
+
+
+def to_html(text: str) -> str:
+    return markdown.markdown(text, extensions=MARKDOWN_EXTENSIONS)
+
+
+def section_markdown(section: dict) -> str:
+    """Markdown for one parsed section's paragraphs and bullets (without its heading)."""
+    parts = list(section["paragraphs"])
+    if section["bullets"]:
+        parts.append("\n".join(f"- {bullet}" for bullet in section["bullets"]))
+    return "\n\n".join(parts)
+
+
+def labelled_items(bullets: list[str]) -> list[dict]:
+    """Turn "**Problem**: text" bullets into [{"label": "Problem", "text": "text"}]."""
+    items = []
+    for bullet in bullets:
+        match = LABELLED.match(bullet)
+        if match:
+            items.append({"label": match["label"].rstrip(":"), "text": match["text"]})
+    return items
 
 
 def format_month(value) -> str:
@@ -80,7 +105,8 @@ def load_experience() -> list[dict]:
     roles = []
     for path in (CONTENT_DIR / "experience").glob("*.md"):
         post = frontmatter.load(path)
-        body = parse_body(post.content)[0]
+        body, *sections = parse_body(post.content)
+        case = next((s for s in sections if s["heading"] == "Case study"), None)
         roles.append(
             {
                 **post.metadata,
@@ -89,7 +115,8 @@ def load_experience() -> list[dict]:
                 "dates": date_range(post["start"], post["end"]),
                 "intro": body["paragraphs"],
                 "bullets": body["bullets"],
-                "body_html": markdown.markdown(post.content),
+                "body_html": to_html(section_markdown(body)),
+                "case_study": labelled_items(case["bullets"]) if case else [],
             }
         )
     return sorted(roles, key=lambda role: str(role["start"]), reverse=True)
@@ -99,7 +126,9 @@ def load_projects() -> list[dict]:
     projects = []
     for path in (CONTENT_DIR / "projects").glob("*.md"):
         post = frontmatter.load(path)
-        first, *rest = parse_body(post.content)[0]["paragraphs"]
+        body = parse_body(post.content)[0]
+        first, *rest = body["paragraphs"]
+        more = section_markdown({"paragraphs": rest, "bullets": body["bullets"]})
         projects.append(
             {
                 **post.metadata,
@@ -108,10 +137,63 @@ def load_projects() -> list[dict]:
                 "dates": date_range(post["start"], post["end"]),
                 "description": first,
                 "paragraphs": [first, *rest],
-                "more_html": markdown.markdown("\n\n".join(rest)),
+                "bullets": body["bullets"],
+                "category": post.get("category", "Personal"),
+                "status_label": project_status(post.metadata),
+                "more_html": to_html(more) if more else "",
             }
         )
+    # Newest first; projects that started in the same month are ordered by title.
+    projects.sort(key=lambda project: project["title"])
     return sorted(projects, key=lambda project: str(project["start"]), reverse=True)
+
+
+def project_status(metadata: dict) -> str:
+    """Badge text from the file: its status, or "Ongoing" when it has no end date."""
+    if metadata.get("status"):
+        return str(metadata["status"]).capitalize()
+    if str(metadata.get("end", "")).lower() == "present":
+        return "Ongoing"
+    return ""
+
+
+def load_page(name: str) -> dict:
+    """A free-form page such as about.md or lab.md: title, sections and HTML per section."""
+    post = frontmatter.load(CONTENT_DIR / f"{name}.md")
+    sections = parse_body(post.content)
+    for section in sections:
+        section["html"] = to_html(section_markdown(section))
+    raw = {}
+    for chunk in re.split(r"^## ", post.content, flags=re.MULTILINE)[1:]:
+        heading, _, text = chunk.partition("\n")
+        raw[heading.strip()] = to_html(text)
+    return {
+        **post.metadata,
+        "file": f"content/{name}.md",
+        "sections": sections,
+        "html_by_heading": raw,
+    }
+
+
+def months_between(start, end=None) -> int:
+    year, month = (int(part) for part in str(start).split("-")[:2])
+    end_date = end or date.today()
+    return (end_date.year - year) * 12 + end_date.month - month
+
+
+def career_summary() -> dict:
+    """Career at a glance, computed from the experience files."""
+    roles = load_experience()
+    first_start = min(str(role["start"]) for role in roles)
+    years = months_between(first_start) // 12
+    current = next((r for r in roles if str(r["end"]).lower() == "present"), None)
+    return {
+        "years": f"{years}+",
+        "since": format_month(first_start),
+        "companies": [role["company"] for role in roles],
+        "domains": [{"company": r["company"], "domain": r.get("domain", "")} for r in roles],
+        "current": f"{current['title']} at {current['company']}" if current else "",
+    }
 
 
 def load_skills() -> list[dict]:

@@ -7,6 +7,7 @@ from the local one. The only differences are the URL scheme and the AI Lab page:
 """
 
 import json
+import re
 from collections.abc import Callable
 from pathlib import Path
 
@@ -16,16 +17,33 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE_DIR = ROOT / "site"
 RECORDED_EXAMPLES = ROOT / "evals" / "recorded_examples.json"
 DEMO_VIDEO = SITE_DIR / "static" / "demo.mp4"
+CV_PDF = ROOT / "content" / "cv-public.pdf"
+CV_DOWNLOAD_PATH = "files/Blessing_Adegbenle_CV.pdf"
 
 # (path, key, label). "" is the home page.
 NAV = [
     ("", "home", "Home"),
+    ("about", "about", "About"),
     ("experience", "experience", "Experience"),
     ("projects", "projects", "Projects"),
     ("skills", "skills", "Skills"),
     ("lab", "lab", "AI Lab"),
+    ("media", "media", "Media"),
     ("contact", "contact", "Contact"),
 ]
+
+# Short descriptions for the "Explore" cards on the home page.
+EXPLORE = {
+    "about": "How I got from forestry and ecology into data engineering, and how I work.",
+    "experience": "Three data engineering roles, each with a short case study.",
+    "projects": "AdhereAI, ShopFlow and this website, with tools and status.",
+    "skills": "Databases, platforms, pipelines and the AI tooling I use.",
+    "lab": "Ask questions about my experience, answered from my CV with sources.",
+    "media": "The AI Lab demo video and my CV as a PDF.",
+    "contact": "Email, LinkedIn and GitHub.",
+}
+
+PROJECT_CATEGORIES = ["Professional", "Personal", "Academic"]
 
 LAB_EXAMPLES = [
     "Where does Blessing work now?",
@@ -39,7 +57,8 @@ def make_url(base: str = "/", static_site: bool = False) -> Callable[[str], str]
     """Build links for templates: url("experience"), url("static/style.css"), url("")."""
 
     def url(path: str = "") -> str:
-        is_page = path and not path.startswith("static/")
+        is_file = "." in path.rsplit("/", 1)[-1]
+        is_page = path and not path.startswith("static/") and not is_file
         if static_site and is_page:
             return f"{base}{path}/"
         return f"{base}{path}"
@@ -53,23 +72,76 @@ def load_recorded_examples() -> dict:
     return json.loads(RECORDED_EXAMPLES.read_text())
 
 
+def achievements(profile: dict, career: dict) -> list[dict]:
+    """The home page strip: the profile highlights plus facts computed from experience."""
+    roles = len(career["companies"])
+    return [
+        *profile.get("highlights", []),
+        {"value": str(roles), "label": "data engineering roles"},
+    ]
+
+
+def key_facts(profile: dict, career: dict) -> list[dict]:
+    education = next((s for s in profile["sections"] if s["heading"] == "Education"), None)
+    degree = ""
+    if education and education["bullets"]:
+        # "**Master of Science (MSc) in Ecology**, Universität Bielefeld, ..." -> degree, school
+        first = education["bullets"][0]
+        title = re.search(r"\*\*(.+?)\*\*", first)
+        school = first.split("**, ", 1)[1].split(",")[0] if "**, " in first else ""
+        degree = f"{title[1]}, {school}" if title else content.plain(first)
+    facts = [
+        ("Location", profile.get("location", "")),
+        ("Role", career["current"]),
+        ("Education", degree),
+        ("Experience", f"{career['years']} years, since {career['since']}"),
+        ("Languages", ", ".join(profile.get("languages", []))),
+        ("Availability", f"From {profile['available']}" if profile.get("available") else ""),
+        ("Relocation", profile.get("relocation", "")),
+    ]
+    return [{"label": label, "value": value} for label, value in facts if value]
+
+
 def page(key: str, static_site: bool = False) -> tuple[str, dict]:
     """Template name and page-specific context for one page."""
     if key == "home":
-        return "home.html", {}
+        profile, career = content.load_profile(), content.career_summary()
+        return "home.html", {
+            "achievements": achievements(profile, career),
+            "key_facts": key_facts(profile, career),
+            "explore": [(path, label, EXPLORE[k]) for path, k, label in NAV if k in EXPLORE],
+        }
+    if key == "about":
+        return "about.html", {"about": content.load_page("about")}
     if key == "experience":
-        return "experience.html", {"roles": content.load_experience()}
+        return "experience.html", {
+            "roles": content.load_experience(),
+            "career": content.career_summary(),
+        }
     if key == "projects":
-        return "projects.html", {"projects": content.load_projects()}
+        projects = content.load_projects()
+        present = {project["category"] for project in projects}
+        return "projects.html", {
+            "projects": projects,
+            # Only offer filters that have projects behind them.
+            "categories": [c for c in PROJECT_CATEGORIES if c in present],
+        }
+    if key == "media":
+        return "media.html", {
+            "has_video": DEMO_VIDEO.exists(),
+            "has_cv": CV_PDF.exists(),
+            "cv_path": CV_DOWNLOAD_PATH,
+        }
     if key == "skills":
         return "skills.html", {"groups": content.load_skills()}
     if key == "lab" and static_site:
         return "lab_static.html", {
             "recorded": load_recorded_examples(),
             "has_video": DEMO_VIDEO.exists(),
+            "lab": content.load_page("lab"),
         }
     if key == "lab":
-        return "lab.html", {"examples": LAB_EXAMPLES}
+        return "lab.html", {"examples": LAB_EXAMPLES, "lab": content.load_page("lab")}
     if key == "contact":
         return "contact.html", {}
     raise KeyError(key)
