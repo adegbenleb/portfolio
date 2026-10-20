@@ -3,8 +3,13 @@
 {% block content %}
 <section class="hero">
   <div class="hero-text">
+    {% if profile.photo %}
+    <img class="hero-photo" src="{{ url('static/' ~ profile.photo) }}" alt="Photo of {{ profile.name }}" width="128" height="128">
+    {% endif %}
     <p class="kicker">// {{ profile.headline.split(",")[0] | lower }} · {{ profile.location | lower }}{% if profile.relocation %} · open to relocation{% endif %}</p>
-    <h1 class="hero-name">{% for part in profile.name.split(" ") %}{{ part }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+    <div class="hero-identity">
+      <h1 class="hero-name">{% for part in profile.name.split(" ") %}{{ part }}{% if not loop.last %}<br>{% endif %}{% endfor %}</h1>
+    </div>
     {% if profile.tagline %}<p class="hero-tagline">{{ profile.tagline }}</p>{% endif %}
     <div class="actions">
       <a class="btn btn-primary" href="{{ url('experience') }}">View experience</a>
@@ -73,7 +78,7 @@
       <p class="ask-question">{{ teaser.question }}</p>
       <p class="answer-text">{{ teaser.answer }}</p>
       <ul class="source-chips" aria-label="Sources">
-        {% for source in teaser.sources[:4] %}<li>[{{ source.n }}] {{ source.label | lower }} · {{ source.section }}</li>{% endfor %}
+        {% for source in teaser.sources %}<li>[{{ source.n }}] {{ source.label | lower }} · {{ source.section }}</li>{% endfor %}
       </ul>
       <p><a class="mono-link" href="{{ url('lab') }}">open ~/ai-lab →</a></p>
     </div>

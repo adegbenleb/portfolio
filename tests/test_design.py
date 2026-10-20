@@ -168,3 +168,35 @@ def test_version_changes_when_the_file_changes(tmp_path, monkeypatch):
     first = pages.asset_version("static/x.css")
     css.write_text("b{}")
     assert pages.asset_version("static/x.css") != first
+
+
+def _cited(answer: str) -> set[int]:
+    return {
+        int(n)
+        for group in re.findall(r"\[(\d+(?:\s*,\s*\d+)*)\]", answer)
+        for n in group.split(",")
+    }
+
+
+def test_every_cited_number_in_recorded_examples_has_a_listed_source():
+    recorded = json.loads(Path("evals/recorded_examples.json").read_text())
+    for example in recorded["examples"]:
+        listed = {source["n"] for source in example["sources"]}
+        assert _cited(example["answer"]) <= listed, example["question"]
+
+
+def test_home_lab_teaser_lists_every_cited_source():
+    html = client.get("/").text
+    teaser = re.search(r'<p class="answer-text">(.*?)</p>', html, re.S).group(1)
+    chips = re.search(r'<ul class="source-chips"[^>]*>(.*?)</ul>', html, re.S).group(1)
+    shown = {int(n) for n in re.findall(r"<li>\[(\d+)\]", chips)}
+    assert _cited(teaser) == shown
+
+
+def test_static_lab_lists_every_cited_source(tmp_path):
+    build(tmp_path, base="/portfolio/")
+    html = (tmp_path / "lab" / "index.html").read_text()
+    for article in re.findall(r"<article.*?</article>", html, re.S):
+        answer = re.search(r'<p class="answer-text">(.*?)</p>', article, re.S).group(1)
+        listed = {int(n) for n in re.findall(r'<li value="(\d+)">', article)}
+        assert _cited(answer) <= listed
